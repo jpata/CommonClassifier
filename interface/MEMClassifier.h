@@ -1,6 +1,8 @@
 #ifndef MEMCLASSIFIER_H
 #define MEMCLASSIFIER_H
 
+#include "TTH/MEIntegratorStandalone/interface/Integrand.h"
+
 class MEMResult {
 public:
   //likelihood ratio
@@ -48,6 +50,14 @@ private:
 
   //This is the MEM workhorse from the ETH side
   Integrand* integrand; 
+
+  //Convenience functions to construct MEM input objects
+  Object make_jet(double pt, double eta, double phi, double mass, double csv, TFile* tffile) const;
+  Object make_lepton(double pt, double eta, double phi, double mass, double charge, TFile* tffile) const;
+  
+  // Returns the transfer function corresponding to a jet flavour and eta
+  TF1* getTransferFunction(TFile* tffile, const char* flavour, double eta) const;
+
 };
 
 #endif
