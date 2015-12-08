@@ -12,6 +12,8 @@
 <lib   name="openloops_ppttbb_1tL"/>
 <lib   name="pphttxcallme2born"/>
 <lib   name="ppttxbbxcallme2born"/>
+<use   name="TTH/MEIntegratorStandalone"/>
+<Flags CXXFLAGS="-g"/>
 <export>
   <lib   name="1"/>
 </export>

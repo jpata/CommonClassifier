@@ -2,6 +2,8 @@
 #define MEMCLASSIFIER_H
 
 #include "TTH/MEIntegratorStandalone/interface/Integrand.h"
+#include "TFile.h"
+#include "TLorentzVector.h"
 
 class MEMResult {
 public:
@@ -43,20 +45,20 @@ public:
   // returns the category of the last evaluated Event
   std::string GetCategoryOfLastEvaluation() const;
 
-private:
-
+//private:
   //Holds the transfer functions
   TFile* transfers;
 
   //This is the MEM workhorse from the ETH side
-  Integrand* integrand; 
+  MEM::Integrand* integrand; 
+  MEM::MEMConfig cfg;
 
   //Convenience functions to construct MEM input objects
-  Object make_jet(double pt, double eta, double phi, double mass, double csv, TFile* tffile) const;
-  Object make_lepton(double pt, double eta, double phi, double mass, double charge, TFile* tffile) const;
+  MEM::Object* make_jet(double pt, double eta, double phi, double mass, double csv) const;
+  MEM::Object* make_lepton(double pt, double eta, double phi, double mass, double charge) const;
   
   // Returns the transfer function corresponding to a jet flavour and eta
-  TF1* getTransferFunction(TFile* tffile, const char* flavour, double eta) const;
+  TF1* getTransferFunction(const char* flavour, double eta) const;
 
 };
 
