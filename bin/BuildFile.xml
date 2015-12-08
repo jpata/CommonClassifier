@@ -1,0 +1,18 @@
+<use   name="root"/>
+<use   name="rootcore"/>
+<use   name="rootmath"/>
+<use   name="rootminuit"/>
+<use   name="rootminuit2"/>
+<use   name="classlib"/>
+<use   name="boost"/>
+<use   name="lhapdf"/>
+<lib   name="openloops"/>
+<lib   name="coli"/>
+<lib   name="openloops_ppHtt_1tL"/>
+<lib   name="openloops_ppttbb_1tL"/>
+<lib   name="pphttxcallme2born"/>
+<lib   name="ppttxbbxcallme2born"/>
+<use   name="TTH/MEIntegratorStandalone"/>
+<use   name="TTH/CommonClassifier"/>
+<bin name="mem_test" file="mem_test.cc"></bin>
+<Flags CXXFLAGS="-g"/>
