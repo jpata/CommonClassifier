@@ -48,7 +48,7 @@ public:
   // returns the category of the last evaluated Event
   std::string GetCategoryOfLastEvaluation() const;
 
-//private:
+private:
   //Holds the transfer functions
   TFile* transfers;
   //holds the b-tag PDF-s
