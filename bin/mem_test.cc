@@ -33,14 +33,16 @@ int main(){
   //create a MET
   TLorentzVector lv_met;
   lv_met.SetPtEtaPhiM(92.1731872559,0., -1.08158898354, 0.);
-
-  auto res = mem.GetOutput(
-    leps_p4,
-    jets_p4,
-    {0.0, 1.0, 0.0, 1.0, 1.0, 1.0},
-    {},
-    {},
-    lv_met
-  );
-  std::cout << res.p << std::endl;
+  for (int i=0; i<100; i++) {
+    auto res = mem.GetOutput(
+      leps_p4,
+      {-1},
+      jets_p4,
+      {0.8, 0.7, 0.9, 0.1, 0.3, 0.99},
+      {},
+      {},
+      lv_met
+    );
+    std::cout << "mem=" << res.p << std::endl;
+  }
 }
