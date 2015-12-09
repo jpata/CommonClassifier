@@ -20,7 +20,7 @@ public:
   double p_err_sig;
   double p_err_bkg;
   
-  //Integration uncertainties of the probabilities
+  //Number of permutations per hypothesis 
   double n_perm_sig;
   double n_perm_bkg;
 };
