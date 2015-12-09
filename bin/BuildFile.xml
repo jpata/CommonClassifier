@@ -15,4 +15,5 @@
 <use   name="TTH/MEIntegratorStandalone"/>
 <use   name="TTH/CommonClassifier"/>
 <bin name="mem_test" file="mem_test.cc"></bin>
+<bin name="bdt_test" file="bdt_test.cc"></bin>
 <Flags CXXFLAGS="-g"/>
