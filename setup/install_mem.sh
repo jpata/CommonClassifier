@@ -6,7 +6,7 @@ mkdir -p src/TTH
 cd src/TTH
 
 #get the MEM code
-git clone https://github.com/bianchini/Code.git MEIntregratorStandalone
+git clone https://github.com/bianchini/Code.git MEIntegratorStandalone
 
 #copy the OpenLoops ME libraries
 cp $CMSSW_BASE/src/TTH/MEIntegratorStandalone/libs/*.so $CMSSW_BASE/lib/$SCRAM_ARCH/
