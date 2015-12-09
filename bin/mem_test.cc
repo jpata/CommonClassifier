@@ -13,7 +13,7 @@ const TLorentzVector p4(double pt, double eta, double phi, double mass) {
 
 int main(){
 
-  //Load the transfer functions
+  //Setup the MEM
   MEMClassifier mem;
 
   //Add some objects to the MEM
