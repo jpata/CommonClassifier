@@ -25,7 +25,8 @@ MEMResult MEMClassifier::GetOutput(
     }
     std::cout << endl;
 
-    for (unsigned int ij=0; ij<selectedJetP4.size(); ij++) {
+    //use up to numMaxJets jets
+    for (unsigned int ij=0; ij<std::min(selectedJetP4.size(), numMaxJets); ij++) {
         TLorentzVector p4 = selectedJetP4.at(ij);
         assert(p4.Pt() > 0);
         //Check if this jet was in the best 4b permutation

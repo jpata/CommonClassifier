@@ -1,4 +1,5 @@
 #include "TTH/CommonClassifier/interface/MEMClassifier.h"
+#include "TTH/CommonClassifier/interface/BDTClassifier.h"
 
 namespace {
     namespace {

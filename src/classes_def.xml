@@ -1,4 +1,5 @@
 <lcgdict>
 	<class name="MEMClassifier"/>
+	<class name="BDTClassifier"/>
 	<class name="MEMResult"/>
 </lcgdict>

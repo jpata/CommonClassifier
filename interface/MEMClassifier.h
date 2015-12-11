@@ -74,6 +74,8 @@ private:
     std::vector<unsigned int>& out_best_perm
   );
   TH3D* GetBTagPDF(const char* flavour);
+
+  long unsigned int numMaxJets = 8;
 };
 
 #endif
