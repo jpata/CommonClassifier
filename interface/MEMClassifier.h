@@ -44,6 +44,17 @@ public:
     const std::vector<double>& looseSelectedJetCSV,
     TLorentzVector& metP4
   );
+  
+  void setup_mem(
+    const std::vector<TLorentzVector>& selectedLeptonP4,
+    const std::vector<double>& selectedLeptonCharge,
+    const std::vector<TLorentzVector>& selectedJetP4,
+    const std::vector<double>& selectedJetCSV,
+    const std::vector<TLorentzVector>& looseSelectedJetP4,
+    const std::vector<double>& looseSelectedJetCSV,
+    TLorentzVector& metP4,
+    std::vector<MEM::Object*>& objs
+  );
 
   // returns the category of the last evaluated Event
   std::string GetCategoryOfLastEvaluation() const;
