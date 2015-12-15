@@ -1,21 +1,21 @@
 #include "TTH/CommonClassifier/interface/MEMClassifier.h"
 
-MEMResult MEMClassifier::GetOutput(
+void MEMClassifier::setup_mem(
     const std::vector<TLorentzVector>& selectedLeptonP4,
     const std::vector<double>& selectedLeptonCharge,
     const std::vector<TLorentzVector>& selectedJetP4,
     const std::vector<double>& selectedJetCSV,
     const std::vector<TLorentzVector>& looseSelectedJetP4,
     const std::vector<double>& looseSelectedJetCSV,
-    TLorentzVector& metP4
-) {
-    //integrand->next_event();
+    TLorentzVector& metP4,
+    std::vector<MEM::Object*>& objs
+    ) {
+
+    integrand->next_event();
     if (selectedLeptonP4.size() != 1) {
         throw std::runtime_error("Expected a single-lepton event");
     }
     
-    //store MEM objects
-    std::vector<MEM::Object*> objs;
 
     std::vector<unsigned int> best_perm;
     double blr_4b_2b = GetBTagLikelihoodRatio(selectedJetP4, selectedJetCSV, best_perm);
@@ -68,20 +68,36 @@ MEMResult MEMClassifier::GetOutput(
     assert(metP4.Pt() > 0);
     MEM::Object met(metP4, MEM::ObjectType::MET );
     integrand->push_back_object(&met);
-    integrand->set_cfg(cfg);
-    integrand->set_permutation_strategy
-    ({MEM::Permutations::BTagged,
-      MEM::Permutations::QUntagged,
-      MEM::Permutations::QQbarBBbarSymmetry
-    });
+}
 
-    MEM::MEMOutput res_sig = integrand->run( MEM::FinalState::LH, MEM::Hypothesis::TTH, {MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1});
-    MEM::MEMOutput res_bkg = integrand->run( MEM::FinalState::LH, MEM::Hypothesis::TTBB, {MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1});
-
-    for (auto* obj : objs) {
-        delete obj;
+MEMResult MEMClassifier::GetOutput(
+    const std::vector<TLorentzVector>& selectedLeptonP4,
+    const std::vector<double>& selectedLeptonCharge,
+    const std::vector<TLorentzVector>& selectedJetP4,
+    const std::vector<double>& selectedJetCSV,
+    const std::vector<TLorentzVector>& looseSelectedJetP4,
+    const std::vector<double>& looseSelectedJetCSV,
+    TLorentzVector& metP4
+) {
+    std::vector<MEM::Object*> objs;
+    
+    setup_mem(selectedLeptonP4, selectedLeptonCharge, selectedJetP4, selectedJetCSV, looseSelectedJetP4, looseSelectedJetCSV, metP4, objs);
+    MEM::MEMOutput res_sig = integrand->run(
+        MEM::FinalState::LH, MEM::Hypothesis::TTH, {}, {MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1}
+    );
+    for(auto* o : objs) {
+        delete o;
     }
-    integrand->next_event();
+    objs.clear();
+    
+    setup_mem(selectedLeptonP4, selectedLeptonCharge, selectedJetP4, selectedJetCSV, looseSelectedJetP4, looseSelectedJetCSV, metP4, objs);
+    MEM::MEMOutput res_bkg = integrand->run(
+        MEM::FinalState::LH, MEM::Hypothesis::TTBB, {}, {MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1}
+    );
+    for(auto* o : objs) {
+        delete o;
+    }
+    objs.clear();
 
     MEMResult res;
     res.p_sig = res_sig.p;
@@ -154,15 +170,20 @@ MEMClassifier::MEMClassifier() : cfg(MEM::MEMConfig()) {
     cfg.set_tf_global(MEM::TFType::qLost, 1, getTransferFunction("leff", 2.0));
 
     integrand = new MEM::Integrand(
-        0
-        //MEM::DebugVerbosity::output
-        //|MEM::DebugVerbosity::init
-        //|MEM::DebugVerbosity::input
-        //|MEM::DebugVerbosity::init_more
+        //0
+        MEM::DebugVerbosity::output
+        |MEM::DebugVerbosity::init
+        |MEM::DebugVerbosity::input
+        |MEM::DebugVerbosity::init_more
         //|MEM::DebugVerbosity::integration
         ,cfg
     );
     integrand->set_cfg(cfg);
+    integrand->set_permutation_strategy
+    ({MEM::Permutations::BTagged,
+      MEM::Permutations::QUntagged,
+      MEM::Permutations::QQbarBBbarSymmetry
+    });
 
     const char* btagfile_path = (
         string("file://") +
