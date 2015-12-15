@@ -25,7 +25,8 @@ MEMResult MEMClassifier::GetOutput(
     }
     std::cout << endl;
 
-    for (unsigned int ij=0; ij<selectedJetP4.size(); ij++) {
+    //use up to numMaxJets jets
+    for (unsigned int ij=0; ij<std::min(selectedJetP4.size(), numMaxJets); ij++) {
         TLorentzVector p4 = selectedJetP4.at(ij);
         assert(p4.Pt() > 0);
         //Check if this jet was in the best 4b permutation
@@ -57,8 +58,8 @@ MEMResult MEMClassifier::GetOutput(
       MEM::Permutations::QQbarBBbarSymmetry
     });
 
-    MEM::MEMOutput res_sig = integrand->run( MEM::FinalState::LH, MEM::Hypothesis::TTH, {});
-    MEM::MEMOutput res_bkg = integrand->run( MEM::FinalState::LH, MEM::Hypothesis::TTBB, {});
+    MEM::MEMOutput res_sig = integrand->run( MEM::FinalState::LH, MEM::Hypothesis::TTH, {MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1});
+    MEM::MEMOutput res_bkg = integrand->run( MEM::FinalState::LH, MEM::Hypothesis::TTBB, {MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1});
 
     for (auto* obj : objs) {
         delete obj;
@@ -137,11 +138,11 @@ MEMClassifier::MEMClassifier() : cfg(MEM::MEMConfig()) {
 
     integrand = new MEM::Integrand(
         0
-        // MEM::DebugVerbosity::output
-        // |MEM::DebugVerbosity::init
-        // |MEM::DebugVerbosity::input
-        // |MEM::DebugVerbosity::init_more
-        //|MEM::DebugVerbosity::integration,
+        //MEM::DebugVerbosity::output
+        //|MEM::DebugVerbosity::init
+        //|MEM::DebugVerbosity::input
+        //|MEM::DebugVerbosity::init_more
+        //|MEM::DebugVerbosity::integration
         ,cfg
     );
     integrand->set_cfg(cfg);
