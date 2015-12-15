@@ -24,7 +24,9 @@ MEMResult MEMClassifier::GetOutput(
         std::cout << i << " ";
     }
     std::cout << endl;
-
+    
+    std::vector<MEM::Object*> tagged;
+    std::vector<MEM::Object*> untagged;
     //use up to numMaxJets jets
     for (unsigned int ij=0; ij<std::min(selectedJetP4.size(), numMaxJets); ij++) {
         TLorentzVector p4 = selectedJetP4.at(ij);
@@ -36,9 +38,24 @@ MEMResult MEMClassifier::GetOutput(
         MEM::Object* jet = make_jet(
             p4.Pt(), p4.Eta(), p4.Phi(), p4.M(), is_btagged ? 1.0 : 0.0
         );
+        if (is_btagged) {
+            tagged.push_back(jet);
+        } else {
+            untagged.push_back(jet);
+        }
+        //objs.push_back(jet);
+        //integrand->push_back_object(jet);
+    }
+    for (auto* jet : tagged) {
         objs.push_back(jet);
         integrand->push_back_object(jet);
     }
+
+    //Ignore the untagged jets
+    //for (auto* jet : untagged) {
+    //    objs.push_back(jet);
+    //    integrand->push_back_object(jet);
+    //}
 
     for (unsigned int il=0; il < selectedLeptonP4.size(); il++) {
         TLorentzVector lep_p4 = selectedLeptonP4.at(il);
