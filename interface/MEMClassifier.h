@@ -9,6 +9,9 @@
 
 class MEMResult {
 public:
+  double blr_4b;
+  double blr_2b;
+
   //likelihood ratio
   double p;
 
@@ -53,7 +56,8 @@ public:
     const std::vector<TLorentzVector>& looseSelectedJetP4,
     const std::vector<double>& looseSelectedJetCSV,
     TLorentzVector& metP4,
-    std::vector<MEM::Object*>& objs
+    std::vector<MEM::Object*>& objs,
+    MEMResult& res
   );
 
   // returns the category of the last evaluated Event
@@ -72,7 +76,7 @@ private:
   MEM::JetLikelihood* blr;
 
   //Convenience functions to construct MEM input objects
-  MEM::Object* make_jet(double pt, double eta, double phi, double mass, double csv) const;
+  MEM::Object* make_jet(double pt, double eta, double phi, double mass, double istagged, double csv) const;
   MEM::Object* make_lepton(double pt, double eta, double phi, double mass, double charge) const;
   
   // Returns the transfer function corresponding to a jet flavour and eta
@@ -82,7 +86,9 @@ private:
   double GetBTagLikelihoodRatio(
     const std::vector<TLorentzVector>& selectedJetP4,
     const std::vector<double>& selectedJetCSV,
-    std::vector<unsigned int>& out_best_perm
+    std::vector<unsigned int>& out_best_perm,
+    double& out_P_4b,
+    double& out_P_2b
   );
   TH3D* GetBTagPDF(const char* flavour);
 
