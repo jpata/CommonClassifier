@@ -25,7 +25,6 @@ for ev in events:
     for ij, j in enumerate(jets_p4):
         c_jets_p4.push_back(make_p4(*j))
         c_jets_csv.push_back(jets_csv[ij])
-        print j, jets_csv[ij], jets_btag[ij]
 
     c_leps_p4 = CvectorLorentz()
     c_leps_charge = Cvectordouble()
