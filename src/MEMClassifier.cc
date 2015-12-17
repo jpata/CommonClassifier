@@ -250,7 +250,7 @@ double MEMClassifier::GetBTagLikelihoodRatio(
     double& out_P_4b,
     double& out_P_2b
     ) {
-    for (unsigned int ij=0; ij < selectedJetP4.size(); ij++) {
+    for (unsigned int ij=0; ij < min(selectedJetP4.size(), numMaxJetsBLR); ij++) {
         blr->push_back_object(GetJetBProbabilities(selectedJetP4[ij], selectedJetCSV[ij]));
     }
 

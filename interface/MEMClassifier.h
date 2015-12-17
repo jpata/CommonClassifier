@@ -93,6 +93,7 @@ private:
   TH3D* GetBTagPDF(const char* flavour);
 
   long unsigned int numMaxJets = 8;
+  long unsigned int numMaxJetsBLR = 8;
 };
 
 #endif
