@@ -1,5 +1,5 @@
-#ifndef _BDTvars_h
-#define _BDTvars_h
+#ifndef _CommonBDTvars_h
+#define _CommonBDTvars_h
 
 #include <vector>
 #include <map>
@@ -18,13 +18,13 @@ typedef std::vector<int> vint;
 
 using namespace std;
 
-class BDTvars{
+class CommonBDTvars{
 
 	// === Functions === //
 	public: 
 		// Constructor(s) and destructor
-		BDTvars();
-		virtual ~BDTvars();
+		CommonBDTvars();
+		virtual ~CommonBDTvars();
 		
 
 
@@ -78,7 +78,7 @@ class BDTvars{
 
 }; // End of class prototype
 
-#endif // _BDTvars_h
+#endif // _CommonBDTvars_h
 
 
 

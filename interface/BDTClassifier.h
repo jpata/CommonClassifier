@@ -5,7 +5,7 @@
 #include <math.h> 
 #include "TLorentzVector.h"
 #include "TMVA/Reader.h"
-#include "TTH/CommonClassifier/interface/BDTvars.h"
+#include "TTH/CommonClassifier/interface/CommonBDTvars.h"
 
 
 // class to evaluate lepton plus jets BDT set
@@ -43,7 +43,7 @@ private:
     std::string category;
     std::map<std::string,TMVA::Reader*> readerMap;
     std::map<std::string,float> variableMap;
-    BDTvars bdtvar;
+    CommonBDTvars bdtvar;
 
 };
 
