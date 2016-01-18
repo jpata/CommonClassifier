@@ -1,5 +1,7 @@
 #include "TTH/CommonClassifier/interface/MEMClassifier.h"
 
+static const double mem_weight = 0.15;
+
 void MEMClassifier::setup_mem(
     const std::vector<TLorentzVector>& selectedLeptonP4,
     const std::vector<double>& selectedLeptonCharge,
@@ -8,22 +10,33 @@ void MEMClassifier::setup_mem(
     const std::vector<TLorentzVector>& looseSelectedJetP4,
     const std::vector<double>& looseSelectedJetCSV,
     TLorentzVector& metP4,
-    std::vector<MEM::Object*>& objs
+    std::vector<MEM::Object*>& objs,
+    MEMResult& res
     ) {
 
     integrand->next_event();
+
+    integrand->set_cfg(cfg);
+    integrand->set_permutation_strategy
+    ({MEM::Permutations::BTagged,
+      MEM::Permutations::QUntagged,
+      MEM::Permutations::QQbarBBbarSymmetry
+    });
+
+
     if (selectedLeptonP4.size() != 1) {
         throw std::runtime_error("Expected a single-lepton event");
     }
     
-
     std::vector<unsigned int> best_perm;
-    double blr_4b_2b = GetBTagLikelihoodRatio(selectedJetP4, selectedJetCSV, best_perm);
-    std::cout << "blr=" << blr_4b_2b << " perm ";
-    for (auto i : best_perm) {
-        std::cout << i << " ";
-    }
-    std::cout << endl;
+    double blr_4b = 0.0;
+    double blr_2b = 0.0;
+
+    GetBTagLikelihoodRatio(
+        selectedJetP4, selectedJetCSV, best_perm, blr_4b, blr_2b
+    );
+    res.blr_4b = blr_4b;
+    res.blr_2b = blr_2b;
     
     std::vector<MEM::Object*> tagged;
     std::vector<MEM::Object*> untagged;
@@ -36,7 +49,7 @@ void MEMClassifier::setup_mem(
         bool is_btagged = std::find(best_perm.begin(), last, ij) != last;
 
         MEM::Object* jet = make_jet(
-            p4.Pt(), p4.Eta(), p4.Phi(), p4.M(), is_btagged ? 1.0 : 0.0
+            p4.Pt(), p4.Eta(), p4.Phi(), p4.M(), is_btagged ? 1.0 : 0.0, selectedJetCSV.at(ij)
         );
         if (is_btagged) {
             tagged.push_back(jet);
@@ -81,40 +94,40 @@ MEMResult MEMClassifier::GetOutput(
 ) {
     std::vector<MEM::Object*> objs;
     
-    setup_mem(selectedLeptonP4, selectedLeptonCharge, selectedJetP4, selectedJetCSV, looseSelectedJetP4, looseSelectedJetCSV, metP4, objs);
+    MEMResult res;
+
+    setup_mem(selectedLeptonP4, selectedLeptonCharge, selectedJetP4, selectedJetCSV, looseSelectedJetP4, looseSelectedJetCSV, metP4, objs, res);
     MEM::MEMOutput res_sig = integrand->run(
-        MEM::FinalState::LH, MEM::Hypothesis::TTH, {}, {MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1}
+        MEM::FinalState::LH, MEM::Hypothesis::TTH, {}, {
+            MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1
+        }
     );
-    for(auto* o : objs) {
-        delete o;
-    }
-    objs.clear();
-    
-    setup_mem(selectedLeptonP4, selectedLeptonCharge, selectedJetP4, selectedJetCSV, looseSelectedJetP4, looseSelectedJetCSV, metP4, objs);
     MEM::MEMOutput res_bkg = integrand->run(
-        MEM::FinalState::LH, MEM::Hypothesis::TTBB, {}, {MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1}
+        MEM::FinalState::LH, MEM::Hypothesis::TTBB, {}, {
+            MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1
+        }
     );
     for(auto* o : objs) {
         delete o;
     }
     objs.clear();
 
-    MEMResult res;
     res.p_sig = res_sig.p;
     res.p_bkg = res_bkg.p;
     res.p_err_sig = res_sig.p_err;
     res.p_err_bkg = res_bkg.p_err;
     res.n_perm_sig = res_sig.num_perm;
     res.n_perm_bkg = res_bkg.num_perm;
-    res.p = res_sig.p / (res_sig.p + 0.02*res_bkg.p);
+    res.p = res_sig.p / (res_sig.p + mem_weight*res_bkg.p);
     return res;
 }
   
-MEM::Object* MEMClassifier::make_jet(double pt, double eta, double phi, double mass, double csv) const {
+MEM::Object* MEMClassifier::make_jet(double pt, double eta, double phi, double mass, double istagged, double csv) const {
     TLorentzVector lv;
     lv.SetPtEtaPhiM(pt, eta, phi, mass);
     MEM::Object* obj = new MEM::Object(lv, MEM::ObjectType::Jet);
-    obj->addObs( MEM::Observable::BTAG, csv); // 0 - jet is assumed to be from a light quark, 1 - a b quark
+    obj->addObs( MEM::Observable::BTAG, istagged); // 0 - jet is assumed to be from a light quark, 1 - a b quark
+    obj->addObs( MEM::Observable::CSV, csv); //b-tagger
     obj->addObs( MEM::Observable::PDGID, 0);  // currently not used
     // attach the transfer functions corresponding to the jet
     obj->addTransferFunction(MEM::TFType::bReco, getTransferFunction("b", lv.Eta()));
@@ -152,15 +165,28 @@ TF1* MEMClassifier::getTransferFunction(const char* flavour, double eta) const {
 
 MEMClassifier::MEMClassifier() : cfg(MEM::MEMConfig()) {
 
-    const string cmssw_path = string(std::getenv("CMSSW_BASE"));
-    const char* transfers_path = (
+    const string cmssw_path(std::getenv("CMSSW_BASE"));
+
+    const string transfers_path = (
         string("file://") +
         cmssw_path +
         string("/src/TTH/CommonClassifier/root/transfer.root")
     ).c_str();
+
+    const string btagfile_path = (
+        string("file://") +
+        cmssw_path +
+        string("/src/TTH/CommonClassifier/root/ControlPlotsV14.root")
+    ).c_str();
+
     cout << "opening " << transfers_path << endl;
-    transfers = new TFile(transfers_path);
+    transfers = new TFile(transfers_path.c_str());
     assert(transfers != nullptr);
+
+    cout << "opening " << btagfile_path << endl;
+    btagfile = new TFile(btagfile_path.c_str());
+    assert(btagfile != nullptr);
+
     cfg.defaultCfg();
     cfg.transfer_function_method = MEM::TFMethod::External;
     //Transfer functions for jet reconstruction efficiency
@@ -168,14 +194,17 @@ MEMClassifier::MEMClassifier() : cfg(MEM::MEMConfig()) {
     cfg.set_tf_global(MEM::TFType::bLost, 1, getTransferFunction("beff", 2.0));
     cfg.set_tf_global(MEM::TFType::qLost, 0, getTransferFunction("leff", 0.0));
     cfg.set_tf_global(MEM::TFType::qLost, 1, getTransferFunction("leff", 2.0));
+    cfg.add_distribution_global(MEM::DistributionType::DistributionType::csv_b, GetBTagPDF("b"));
+    cfg.add_distribution_global(MEM::DistributionType::DistributionType::csv_c, GetBTagPDF("c"));
+    cfg.add_distribution_global(MEM::DistributionType::DistributionType::csv_l, GetBTagPDF("l"));
 
     integrand = new MEM::Integrand(
-        //0
-        MEM::DebugVerbosity::output
-        |MEM::DebugVerbosity::init
-        |MEM::DebugVerbosity::input
-        |MEM::DebugVerbosity::init_more
-        //|MEM::DebugVerbosity::integration
+        0
+        // MEM::DebugVerbosity::output
+        // |MEM::DebugVerbosity::init
+        // |MEM::DebugVerbosity::input
+        // |MEM::DebugVerbosity::init_more
+        // |MEM::DebugVerbosity::integration
         ,cfg
     );
     integrand->set_cfg(cfg);
@@ -185,20 +214,12 @@ MEMClassifier::MEMClassifier() : cfg(MEM::MEMConfig()) {
       MEM::Permutations::QQbarBBbarSymmetry
     });
 
-    const char* btagfile_path = (
-        string("file://") +
-        cmssw_path +
-        string("/src/TTH/CommonClassifier/root/ControlPlotsV14.root")
-    ).c_str();
-    cout << "opening " << btagfile_path << endl;
-    btagfile = new TFile(btagfile_path);
-    assert(btagfile != nullptr);
-
     blr = new MEM::JetLikelihood();
     
 }
 
 TH3D* MEMClassifier::GetBTagPDF(const char* flavour) {
+    assert(btagfile != nullptr);
     TH3D* ret = nullptr;
     ret = (TH3D*)(btagfile->Get((string("btagCSV_")+string(flavour)+string("_pt_eta")).c_str()));
     assert(ret != nullptr);
@@ -224,9 +245,11 @@ MEM::JetProbability MEMClassifier::GetJetBProbabilities(
 double MEMClassifier::GetBTagLikelihoodRatio(
     const std::vector<TLorentzVector>& selectedJetP4,
     const std::vector<double>& selectedJetCSV,
-    std::vector<unsigned int>& out_best_perm
+    std::vector<unsigned int>& out_best_perm,
+    double& out_P_4b,
+    double& out_P_2b
     ) {
-    for (unsigned int ij=0; ij < selectedJetP4.size(); ij++) {
+    for (unsigned int ij=0; ij < min(selectedJetP4.size(), numMaxJetsBLR); ij++) {
         blr->push_back_object(GetJetBProbabilities(selectedJetP4[ij], selectedJetCSV[ij]));
     }
 
@@ -236,7 +259,8 @@ double MEMClassifier::GetBTagLikelihoodRatio(
     double P_2b = blr->calcProbability(MEM::JetInterpretation::b, MEM::JetInterpretation::l, 2, best_perm_2b);
     out_best_perm = best_perm_4b;
     blr->next_event();
-
+    out_P_4b = P_4b;
+    out_P_2b = P_2b;
     return P_4b / (P_4b + P_2b);
 }
 
