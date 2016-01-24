@@ -149,7 +149,7 @@ BlrBDTClassifier::BlrBDTClassifier (string weightpath):btagMcut(0.89){
     
     // ==================================================
     //book MVAs from weights 
-    readerMap["6j4t"]->BookMVA("BDT",weightpath+"/weights_64.xml");
+    readerMap["6j4t"]->BookMVA("BDT",weightpath+"/weights_64.xml"); 
     readerMap["5j4t"]->BookMVA("BDT",weightpath+"/weights_54.xml");
     readerMap["4j4t"]->BookMVA("BDT",weightpath+"/weights_44.xml");
     readerMap["6j3t"]->BookMVA("BDT",weightpath+"/weights_63.xml");

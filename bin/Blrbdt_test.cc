@@ -35,10 +35,11 @@ int main(){
     auto result = bdt.GetBDTOutput(
 				leps_p4,				
 				jets_p4,
-				{0.8, 0.7, 0.9, 0.1, 0.3, 0.99},
+				{0.92, 0.95, 0.9, 0.1, 0.3, 0.99},
 				{},
 				{},
-				lv_met
+				lv_met,
+				0.8
     );
     std::cout << "================================" << std::endl;
     std::cout << "bdtoutput=" << result << std::endl;
