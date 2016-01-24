@@ -10,14 +10,14 @@
 
 
 
-MvaVariablesBase::MvaVariablesBase():
-eventWeight_(MvaVariableFloat(name_eventWeight_))
+DLBDTMvaVariablesBase::DLBDTMvaVariablesBase():
+eventWeight_(DLBDTMvaVariableFloat(name_eventWeight_))
 {}
 
 
 
-MvaVariablesBase::MvaVariablesBase(const double& eventWeight):
-eventWeight_(MvaVariableFloat(name_eventWeight_))
+DLBDTMvaVariablesBase::DLBDTMvaVariablesBase(const double& eventWeight):
+eventWeight_(DLBDTMvaVariableFloat(name_eventWeight_))
 {
     // Event weight
     eventWeight_.setValue(eventWeight);
@@ -25,9 +25,9 @@ eventWeight_(MvaVariableFloat(name_eventWeight_))
 
 
 
-void MvaVariablesBase::clearVariables(std::vector<MvaVariablesBase*>& v_mvaVariables){
-    for(auto& mvaVariables : v_mvaVariables) delete mvaVariables;
-    v_mvaVariables.clear();
+void DLBDTMvaVariablesBase::clearVariables(std::vector<DLBDTMvaVariablesBase*>& v_DLBDTMvaVariables){
+    for(auto& DLBDTMvaVariables : v_DLBDTMvaVariables) delete DLBDTMvaVariables;
+    v_DLBDTMvaVariables.clear();
 }
 
 
@@ -39,7 +39,7 @@ void MvaVariablesBase::clearVariables(std::vector<MvaVariablesBase*>& v_mvaVaria
 
 
 // External function that handles the conversion of vectors of TLorentzVector to XYZVector objects
-std::vector<ROOT::Math::XYZVector> MvaVariablesEventClassification::EventShapeVariables::makeVecForEventShape(const std::vector<TLorentzVector>& jets) {
+std::vector<ROOT::Math::XYZVector> DLBDTMvaVariablesEventClassification::EventShapeVariables::makeVecForEventShape(const std::vector<TLorentzVector>& jets) {
 
   std::vector<ROOT::Math::XYZVector> p;
 
@@ -57,77 +57,77 @@ std::vector<ROOT::Math::XYZVector> MvaVariablesEventClassification::EventShapeVa
 
 
 
-MvaVariablesEventClassification::MvaVariablesEventClassification():
-MvaVariablesBase(),
-multiplicity_jets_(MvaVariableInt(name_multiplicity_jets_)),
-btagDiscriminatorAverage_tagged_(MvaVariableFloat(name_btagDiscriminatorAverage_tagged_)),
-btagDiscriminatorAverage_untagged_(MvaVariableFloat(name_averageBtagDiscriminatorUntagged_)),
-minDeltaR_jet_jet_(MvaVariableFloat(name_minDeltaR_jet_jet_)),
-minDeltaR_tag_tag_(MvaVariableFloat(name_minDeltaR_tag_tag_)),
-avgDeltaR_jet_jet_(MvaVariableFloat(name_avgDeltaR_jet_jet_)),
-avgDeltaR_jet_tag_(MvaVariableFloat(name_avgDeltaR_jet_tag_)),
-avgDeltaR_tag_tag_(MvaVariableFloat(name_avgDeltaR_tag_tag_)),
-ptSum_jets_leptons_(MvaVariableFloat(name_ptSum_jets_leptons_)),
-multiplicity_higgsLikeDijet15_(MvaVariableInt(name_multiplicity_higgsLikeDijet15_)),
-mass_higgsLikeDijet_(MvaVariableFloat(name_mass_higgsLikeDijet_)),
-mass_higgsLikeDijet2_(MvaVariableFloat(name_mass_higgsLikeDijet2_)),
-mass_jet_jet_min_deltaR_(MvaVariableFloat(name_mass_jet_jet_min_deltaR_)),
-mass_tag_tag_min_deltaR_(MvaVariableFloat(name_mass_tag_tag_min_deltaR_)),
-mass_jet_tag_min_deltaR_(MvaVariableFloat(name_mass_jet_tag_min_deltaR_)),
-mass_tag_tag_max_mass_(MvaVariableFloat(name_mass_tag_tag_max_mass_)),
-median_mass_jet_jet_(MvaVariableFloat(name_median_mass_jet_jet_)),
-maxDeltaEta_jet_jet_(MvaVariableFloat(name_maxDeltaEta_jet_jet_)),
-maxDeltaEta_tag_tag_(MvaVariableFloat(name_maxDeltaEta_tag_tag_)),
-HT_jets_(MvaVariableFloat(name_HT_jets_)),
-HT_tags_(MvaVariableFloat(name_HT_tags_)),
-pT_jet_jet_min_deltaR_(MvaVariableFloat(name_pT_jet_jet_min_deltaR_)),
-pT_jet_tag_min_deltaR_(MvaVariableFloat(name_pT_jet_tag_min_deltaR_)),
-pT_tag_tag_min_deltaR_(MvaVariableFloat(name_pT_tag_tag_min_deltaR_)),
-mass_jet_jet_jet_max_pT_(MvaVariableFloat(name_mass_jet_jet_jet_max_pT_)),
-mass_jet_tag_tag_max_pT_(MvaVariableFloat(name_mass_jet_tag_tag_max_pT_)),
-centrality_jets_leps_(MvaVariableFloat(name_centrality_jets_leps_)),
-centrality_tags_(MvaVariableFloat(name_centrality_tags_)),
-twist_jet_jet_max_mass_(MvaVariableFloat(name_twist_jet_jet_max_mass_)),
-twist_jet_tag_max_mass_(MvaVariableFloat(name_twist_jet_tag_max_mass_)),
-twist_tag_tag_max_mass_(MvaVariableFloat(name_twist_tag_tag_max_mass_)),
-twist_tag_tag_min_deltaR_(MvaVariableFloat(name_twist_tag_tag_min_deltaR_)),
-sphericity_jet_(MvaVariableFloat(name_sphericity_jet_)),
-aplanarity_jet_(MvaVariableFloat(name_aplanarity_jet_)),
-circularity_jet_(MvaVariableFloat(name_circularity_jet_)),
-isotropy_jet_(MvaVariableFloat(name_isotropy_jet_)),
-C_jet_(MvaVariableFloat(name_C_jet_)),
-D_jet_(MvaVariableFloat(name_D_jet_)),
-transSphericity_jet_(MvaVariableFloat(name_transSphericity_jet_)),
-sphericity_tag_(MvaVariableFloat(name_sphericity_tag_)),
-aplanarity_tag_(MvaVariableFloat(name_aplanarity_tag_)),
-circularity_tag_(MvaVariableFloat(name_circularity_tag_)),
-isotropy_tag_(MvaVariableFloat(name_isotropy_tag_)),
-C_tag_(MvaVariableFloat(name_C_tag_)),
-D_tag_(MvaVariableFloat(name_D_tag_)),
-transSphericity_tag_(MvaVariableFloat(name_transSphericity_tag_)),
-H0_jet_(MvaVariableFloat(name_H0_jet_)),
-H1_jet_(MvaVariableFloat(name_H1_jet_)),
-H2_jet_(MvaVariableFloat(name_H2_jet_)),
-H3_jet_(MvaVariableFloat(name_H3_jet_)),
-H4_jet_(MvaVariableFloat(name_H4_jet_)),
-R1_jet_(MvaVariableFloat(name_R1_jet_)),
-R2_jet_(MvaVariableFloat(name_R2_jet_)),
-R3_jet_(MvaVariableFloat(name_R3_jet_)),
-R4_jet_(MvaVariableFloat(name_R4_jet_)),
-H0_tag_(MvaVariableFloat(name_H0_tag_)),
-H1_tag_(MvaVariableFloat(name_H1_tag_)),
-H2_tag_(MvaVariableFloat(name_H2_tag_)),
-H3_tag_(MvaVariableFloat(name_H3_tag_)),
-H4_tag_(MvaVariableFloat(name_H4_tag_)),
-R1_tag_(MvaVariableFloat(name_R1_tag_)),
-R2_tag_(MvaVariableFloat(name_R2_tag_)),
-R3_tag_(MvaVariableFloat(name_R3_tag_)),
-R4_tag_(MvaVariableFloat(name_R4_tag_))
+DLBDTMvaVariablesEventClassification::DLBDTMvaVariablesEventClassification():
+DLBDTMvaVariablesBase(),
+multiplicity_jets_(DLBDTMvaVariableInt(name_multiplicity_jets_)),
+btagDiscriminatorAverage_tagged_(DLBDTMvaVariableFloat(name_btagDiscriminatorAverage_tagged_)),
+btagDiscriminatorAverage_untagged_(DLBDTMvaVariableFloat(name_averageBtagDiscriminatorUntagged_)),
+minDeltaR_jet_jet_(DLBDTMvaVariableFloat(name_minDeltaR_jet_jet_)),
+minDeltaR_tag_tag_(DLBDTMvaVariableFloat(name_minDeltaR_tag_tag_)),
+avgDeltaR_jet_jet_(DLBDTMvaVariableFloat(name_avgDeltaR_jet_jet_)),
+avgDeltaR_jet_tag_(DLBDTMvaVariableFloat(name_avgDeltaR_jet_tag_)),
+avgDeltaR_tag_tag_(DLBDTMvaVariableFloat(name_avgDeltaR_tag_tag_)),
+ptSum_jets_leptons_(DLBDTMvaVariableFloat(name_ptSum_jets_leptons_)),
+multiplicity_higgsLikeDijet15_(DLBDTMvaVariableInt(name_multiplicity_higgsLikeDijet15_)),
+mass_higgsLikeDijet_(DLBDTMvaVariableFloat(name_mass_higgsLikeDijet_)),
+mass_higgsLikeDijet2_(DLBDTMvaVariableFloat(name_mass_higgsLikeDijet2_)),
+mass_jet_jet_min_deltaR_(DLBDTMvaVariableFloat(name_mass_jet_jet_min_deltaR_)),
+mass_tag_tag_min_deltaR_(DLBDTMvaVariableFloat(name_mass_tag_tag_min_deltaR_)),
+mass_jet_tag_min_deltaR_(DLBDTMvaVariableFloat(name_mass_jet_tag_min_deltaR_)),
+mass_tag_tag_max_mass_(DLBDTMvaVariableFloat(name_mass_tag_tag_max_mass_)),
+median_mass_jet_jet_(DLBDTMvaVariableFloat(name_median_mass_jet_jet_)),
+maxDeltaEta_jet_jet_(DLBDTMvaVariableFloat(name_maxDeltaEta_jet_jet_)),
+maxDeltaEta_tag_tag_(DLBDTMvaVariableFloat(name_maxDeltaEta_tag_tag_)),
+HT_jets_(DLBDTMvaVariableFloat(name_HT_jets_)),
+HT_tags_(DLBDTMvaVariableFloat(name_HT_tags_)),
+pT_jet_jet_min_deltaR_(DLBDTMvaVariableFloat(name_pT_jet_jet_min_deltaR_)),
+pT_jet_tag_min_deltaR_(DLBDTMvaVariableFloat(name_pT_jet_tag_min_deltaR_)),
+pT_tag_tag_min_deltaR_(DLBDTMvaVariableFloat(name_pT_tag_tag_min_deltaR_)),
+mass_jet_jet_jet_max_pT_(DLBDTMvaVariableFloat(name_mass_jet_jet_jet_max_pT_)),
+mass_jet_tag_tag_max_pT_(DLBDTMvaVariableFloat(name_mass_jet_tag_tag_max_pT_)),
+centrality_jets_leps_(DLBDTMvaVariableFloat(name_centrality_jets_leps_)),
+centrality_tags_(DLBDTMvaVariableFloat(name_centrality_tags_)),
+twist_jet_jet_max_mass_(DLBDTMvaVariableFloat(name_twist_jet_jet_max_mass_)),
+twist_jet_tag_max_mass_(DLBDTMvaVariableFloat(name_twist_jet_tag_max_mass_)),
+twist_tag_tag_max_mass_(DLBDTMvaVariableFloat(name_twist_tag_tag_max_mass_)),
+twist_tag_tag_min_deltaR_(DLBDTMvaVariableFloat(name_twist_tag_tag_min_deltaR_)),
+sphericity_jet_(DLBDTMvaVariableFloat(name_sphericity_jet_)),
+aplanarity_jet_(DLBDTMvaVariableFloat(name_aplanarity_jet_)),
+circularity_jet_(DLBDTMvaVariableFloat(name_circularity_jet_)),
+isotropy_jet_(DLBDTMvaVariableFloat(name_isotropy_jet_)),
+C_jet_(DLBDTMvaVariableFloat(name_C_jet_)),
+D_jet_(DLBDTMvaVariableFloat(name_D_jet_)),
+transSphericity_jet_(DLBDTMvaVariableFloat(name_transSphericity_jet_)),
+sphericity_tag_(DLBDTMvaVariableFloat(name_sphericity_tag_)),
+aplanarity_tag_(DLBDTMvaVariableFloat(name_aplanarity_tag_)),
+circularity_tag_(DLBDTMvaVariableFloat(name_circularity_tag_)),
+isotropy_tag_(DLBDTMvaVariableFloat(name_isotropy_tag_)),
+C_tag_(DLBDTMvaVariableFloat(name_C_tag_)),
+D_tag_(DLBDTMvaVariableFloat(name_D_tag_)),
+transSphericity_tag_(DLBDTMvaVariableFloat(name_transSphericity_tag_)),
+H0_jet_(DLBDTMvaVariableFloat(name_H0_jet_)),
+H1_jet_(DLBDTMvaVariableFloat(name_H1_jet_)),
+H2_jet_(DLBDTMvaVariableFloat(name_H2_jet_)),
+H3_jet_(DLBDTMvaVariableFloat(name_H3_jet_)),
+H4_jet_(DLBDTMvaVariableFloat(name_H4_jet_)),
+R1_jet_(DLBDTMvaVariableFloat(name_R1_jet_)),
+R2_jet_(DLBDTMvaVariableFloat(name_R2_jet_)),
+R3_jet_(DLBDTMvaVariableFloat(name_R3_jet_)),
+R4_jet_(DLBDTMvaVariableFloat(name_R4_jet_)),
+H0_tag_(DLBDTMvaVariableFloat(name_H0_tag_)),
+H1_tag_(DLBDTMvaVariableFloat(name_H1_tag_)),
+H2_tag_(DLBDTMvaVariableFloat(name_H2_tag_)),
+H3_tag_(DLBDTMvaVariableFloat(name_H3_tag_)),
+H4_tag_(DLBDTMvaVariableFloat(name_H4_tag_)),
+R1_tag_(DLBDTMvaVariableFloat(name_R1_tag_)),
+R2_tag_(DLBDTMvaVariableFloat(name_R2_tag_)),
+R3_tag_(DLBDTMvaVariableFloat(name_R3_tag_)),
+R4_tag_(DLBDTMvaVariableFloat(name_R4_tag_))
 {}
 
 
 
-MvaVariablesEventClassification::MvaVariablesEventClassification(
+DLBDTMvaVariablesEventClassification::DLBDTMvaVariablesEventClassification(
     const int multiplicity_jets,
     const double& btagDiscriminatorAverage_tagged, const double& btagDiscriminatorAverage_untagged,
     const double& minDeltaR_jet_jet, const double& minDeltaR_tag_tag,
@@ -153,71 +153,71 @@ MvaVariablesEventClassification::MvaVariablesEventClassification(
     const double& R1_jet, const double& R2_jet, const double& R3_jet, const double& R4_jet,
     const double& H0_tag, const double& H1_tag, const double& H2_tag, const double& H3_tag, const double& H4_tag,
     const double& R1_tag, const double& R2_tag, const double& R3_tag, const double& R4_tag):
-MvaVariablesBase(),
-multiplicity_jets_(MvaVariableInt(name_multiplicity_jets_)),
-btagDiscriminatorAverage_tagged_(MvaVariableFloat(name_btagDiscriminatorAverage_tagged_)),
-btagDiscriminatorAverage_untagged_(MvaVariableFloat(name_averageBtagDiscriminatorUntagged_)),
-minDeltaR_jet_jet_(MvaVariableFloat(name_minDeltaR_jet_jet_)),
-minDeltaR_tag_tag_(MvaVariableFloat(name_minDeltaR_tag_tag_)),
-avgDeltaR_jet_jet_(MvaVariableFloat(name_avgDeltaR_jet_jet_)),
-avgDeltaR_jet_tag_(MvaVariableFloat(name_avgDeltaR_jet_tag_)),
-avgDeltaR_tag_tag_(MvaVariableFloat(name_avgDeltaR_tag_tag_)),
-ptSum_jets_leptons_(MvaVariableFloat(name_ptSum_jets_leptons_)),
-multiplicity_higgsLikeDijet15_(MvaVariableInt(name_multiplicity_higgsLikeDijet15_)),
-mass_higgsLikeDijet_(MvaVariableFloat(name_mass_higgsLikeDijet_)),
-mass_higgsLikeDijet2_(MvaVariableFloat(name_mass_higgsLikeDijet2_)),
-mass_jet_jet_min_deltaR_(MvaVariableFloat(name_mass_jet_jet_min_deltaR_)),
-mass_tag_tag_min_deltaR_(MvaVariableFloat(name_mass_tag_tag_min_deltaR_)),
-mass_jet_tag_min_deltaR_(MvaVariableFloat(name_mass_jet_tag_min_deltaR_)),
-mass_tag_tag_max_mass_(MvaVariableFloat(name_mass_tag_tag_max_mass_)),
-median_mass_jet_jet_(MvaVariableFloat(name_median_mass_jet_jet_)),
-maxDeltaEta_jet_jet_(MvaVariableFloat(name_maxDeltaEta_jet_jet_)),
-maxDeltaEta_tag_tag_(MvaVariableFloat(name_maxDeltaEta_tag_tag_)),
-HT_jets_(MvaVariableFloat(name_HT_jets_)),
-HT_tags_(MvaVariableFloat(name_HT_tags_)),
-pT_jet_jet_min_deltaR_(MvaVariableFloat(name_pT_jet_jet_min_deltaR_)),
-pT_jet_tag_min_deltaR_(MvaVariableFloat(name_pT_jet_tag_min_deltaR_)),
-pT_tag_tag_min_deltaR_(MvaVariableFloat(name_pT_tag_tag_min_deltaR_)),
-mass_jet_jet_jet_max_pT_(MvaVariableFloat(name_mass_jet_jet_jet_max_pT_)),
-mass_jet_tag_tag_max_pT_(MvaVariableFloat(name_mass_jet_tag_tag_max_pT_)),
-centrality_jets_leps_(MvaVariableFloat(name_centrality_jets_leps_)),
-centrality_tags_(MvaVariableFloat(name_centrality_tags_)),
-twist_jet_jet_max_mass_(MvaVariableFloat(name_twist_jet_jet_max_mass_)),
-twist_jet_tag_max_mass_(MvaVariableFloat(name_twist_jet_tag_max_mass_)),
-twist_tag_tag_max_mass_(MvaVariableFloat(name_twist_tag_tag_max_mass_)),
-twist_tag_tag_min_deltaR_(MvaVariableFloat(name_twist_tag_tag_min_deltaR_)),
-sphericity_jet_(MvaVariableFloat(name_sphericity_jet_)),
-aplanarity_jet_(MvaVariableFloat(name_aplanarity_jet_)),
-circularity_jet_(MvaVariableFloat(name_circularity_jet_)),
-isotropy_jet_(MvaVariableFloat(name_isotropy_jet_)),
-C_jet_(MvaVariableFloat(name_C_jet_)),
-D_jet_(MvaVariableFloat(name_D_jet_)),
-transSphericity_jet_(MvaVariableFloat(name_transSphericity_jet_)),
-sphericity_tag_(MvaVariableFloat(name_sphericity_tag_)),
-aplanarity_tag_(MvaVariableFloat(name_aplanarity_tag_)),
-circularity_tag_(MvaVariableFloat(name_circularity_tag_)),
-isotropy_tag_(MvaVariableFloat(name_isotropy_tag_)),
-C_tag_(MvaVariableFloat(name_C_tag_)),
-D_tag_(MvaVariableFloat(name_D_tag_)),
-transSphericity_tag_(MvaVariableFloat(name_transSphericity_tag_)),
-H0_jet_(MvaVariableFloat(name_H0_jet_)),
-H1_jet_(MvaVariableFloat(name_H1_jet_)),
-H2_jet_(MvaVariableFloat(name_H2_jet_)),
-H3_jet_(MvaVariableFloat(name_H3_jet_)),
-H4_jet_(MvaVariableFloat(name_H4_jet_)),
-R1_jet_(MvaVariableFloat(name_R1_jet_)),
-R2_jet_(MvaVariableFloat(name_R2_jet_)),
-R3_jet_(MvaVariableFloat(name_R3_jet_)),
-R4_jet_(MvaVariableFloat(name_R4_jet_)),
-H0_tag_(MvaVariableFloat(name_H0_tag_)),
-H1_tag_(MvaVariableFloat(name_H1_tag_)),
-H2_tag_(MvaVariableFloat(name_H2_tag_)),
-H3_tag_(MvaVariableFloat(name_H3_tag_)),
-H4_tag_(MvaVariableFloat(name_H4_tag_)),
-R1_tag_(MvaVariableFloat(name_R1_tag_)),
-R2_tag_(MvaVariableFloat(name_R2_tag_)),
-R3_tag_(MvaVariableFloat(name_R3_tag_)),
-R4_tag_(MvaVariableFloat(name_R4_tag_))
+DLBDTMvaVariablesBase(),
+multiplicity_jets_(DLBDTMvaVariableInt(name_multiplicity_jets_)),
+btagDiscriminatorAverage_tagged_(DLBDTMvaVariableFloat(name_btagDiscriminatorAverage_tagged_)),
+btagDiscriminatorAverage_untagged_(DLBDTMvaVariableFloat(name_averageBtagDiscriminatorUntagged_)),
+minDeltaR_jet_jet_(DLBDTMvaVariableFloat(name_minDeltaR_jet_jet_)),
+minDeltaR_tag_tag_(DLBDTMvaVariableFloat(name_minDeltaR_tag_tag_)),
+avgDeltaR_jet_jet_(DLBDTMvaVariableFloat(name_avgDeltaR_jet_jet_)),
+avgDeltaR_jet_tag_(DLBDTMvaVariableFloat(name_avgDeltaR_jet_tag_)),
+avgDeltaR_tag_tag_(DLBDTMvaVariableFloat(name_avgDeltaR_tag_tag_)),
+ptSum_jets_leptons_(DLBDTMvaVariableFloat(name_ptSum_jets_leptons_)),
+multiplicity_higgsLikeDijet15_(DLBDTMvaVariableInt(name_multiplicity_higgsLikeDijet15_)),
+mass_higgsLikeDijet_(DLBDTMvaVariableFloat(name_mass_higgsLikeDijet_)),
+mass_higgsLikeDijet2_(DLBDTMvaVariableFloat(name_mass_higgsLikeDijet2_)),
+mass_jet_jet_min_deltaR_(DLBDTMvaVariableFloat(name_mass_jet_jet_min_deltaR_)),
+mass_tag_tag_min_deltaR_(DLBDTMvaVariableFloat(name_mass_tag_tag_min_deltaR_)),
+mass_jet_tag_min_deltaR_(DLBDTMvaVariableFloat(name_mass_jet_tag_min_deltaR_)),
+mass_tag_tag_max_mass_(DLBDTMvaVariableFloat(name_mass_tag_tag_max_mass_)),
+median_mass_jet_jet_(DLBDTMvaVariableFloat(name_median_mass_jet_jet_)),
+maxDeltaEta_jet_jet_(DLBDTMvaVariableFloat(name_maxDeltaEta_jet_jet_)),
+maxDeltaEta_tag_tag_(DLBDTMvaVariableFloat(name_maxDeltaEta_tag_tag_)),
+HT_jets_(DLBDTMvaVariableFloat(name_HT_jets_)),
+HT_tags_(DLBDTMvaVariableFloat(name_HT_tags_)),
+pT_jet_jet_min_deltaR_(DLBDTMvaVariableFloat(name_pT_jet_jet_min_deltaR_)),
+pT_jet_tag_min_deltaR_(DLBDTMvaVariableFloat(name_pT_jet_tag_min_deltaR_)),
+pT_tag_tag_min_deltaR_(DLBDTMvaVariableFloat(name_pT_tag_tag_min_deltaR_)),
+mass_jet_jet_jet_max_pT_(DLBDTMvaVariableFloat(name_mass_jet_jet_jet_max_pT_)),
+mass_jet_tag_tag_max_pT_(DLBDTMvaVariableFloat(name_mass_jet_tag_tag_max_pT_)),
+centrality_jets_leps_(DLBDTMvaVariableFloat(name_centrality_jets_leps_)),
+centrality_tags_(DLBDTMvaVariableFloat(name_centrality_tags_)),
+twist_jet_jet_max_mass_(DLBDTMvaVariableFloat(name_twist_jet_jet_max_mass_)),
+twist_jet_tag_max_mass_(DLBDTMvaVariableFloat(name_twist_jet_tag_max_mass_)),
+twist_tag_tag_max_mass_(DLBDTMvaVariableFloat(name_twist_tag_tag_max_mass_)),
+twist_tag_tag_min_deltaR_(DLBDTMvaVariableFloat(name_twist_tag_tag_min_deltaR_)),
+sphericity_jet_(DLBDTMvaVariableFloat(name_sphericity_jet_)),
+aplanarity_jet_(DLBDTMvaVariableFloat(name_aplanarity_jet_)),
+circularity_jet_(DLBDTMvaVariableFloat(name_circularity_jet_)),
+isotropy_jet_(DLBDTMvaVariableFloat(name_isotropy_jet_)),
+C_jet_(DLBDTMvaVariableFloat(name_C_jet_)),
+D_jet_(DLBDTMvaVariableFloat(name_D_jet_)),
+transSphericity_jet_(DLBDTMvaVariableFloat(name_transSphericity_jet_)),
+sphericity_tag_(DLBDTMvaVariableFloat(name_sphericity_tag_)),
+aplanarity_tag_(DLBDTMvaVariableFloat(name_aplanarity_tag_)),
+circularity_tag_(DLBDTMvaVariableFloat(name_circularity_tag_)),
+isotropy_tag_(DLBDTMvaVariableFloat(name_isotropy_tag_)),
+C_tag_(DLBDTMvaVariableFloat(name_C_tag_)),
+D_tag_(DLBDTMvaVariableFloat(name_D_tag_)),
+transSphericity_tag_(DLBDTMvaVariableFloat(name_transSphericity_tag_)),
+H0_jet_(DLBDTMvaVariableFloat(name_H0_jet_)),
+H1_jet_(DLBDTMvaVariableFloat(name_H1_jet_)),
+H2_jet_(DLBDTMvaVariableFloat(name_H2_jet_)),
+H3_jet_(DLBDTMvaVariableFloat(name_H3_jet_)),
+H4_jet_(DLBDTMvaVariableFloat(name_H4_jet_)),
+R1_jet_(DLBDTMvaVariableFloat(name_R1_jet_)),
+R2_jet_(DLBDTMvaVariableFloat(name_R2_jet_)),
+R3_jet_(DLBDTMvaVariableFloat(name_R3_jet_)),
+R4_jet_(DLBDTMvaVariableFloat(name_R4_jet_)),
+H0_tag_(DLBDTMvaVariableFloat(name_H0_tag_)),
+H1_tag_(DLBDTMvaVariableFloat(name_H1_tag_)),
+H2_tag_(DLBDTMvaVariableFloat(name_H2_tag_)),
+H3_tag_(DLBDTMvaVariableFloat(name_H3_tag_)),
+H4_tag_(DLBDTMvaVariableFloat(name_H4_tag_)),
+R1_tag_(DLBDTMvaVariableFloat(name_R1_tag_)),
+R2_tag_(DLBDTMvaVariableFloat(name_R2_tag_)),
+R3_tag_(DLBDTMvaVariableFloat(name_R3_tag_)),
+R4_tag_(DLBDTMvaVariableFloat(name_R4_tag_))
 {
     // Fill the variables for MVA TTree
     multiplicity_jets_.setValue(multiplicity_jets);
@@ -291,13 +291,13 @@ R4_tag_(MvaVariableFloat(name_R4_tag_))
     R4_tag_.setValue(R4_tag);
 }
 
-MvaVariablesEventClassification::FoxWolframMoments::FoxWolframMoments(int maxorder): _nmom( maxorder+1 )
+DLBDTMvaVariablesEventClassification::FoxWolframMoments::FoxWolframMoments(int maxorder): _nmom( maxorder+1 )
 										   , _FWarray( _nmom )
 										   , _sumarray( _nmom )
 {}
 
 
-void MvaVariablesEventClassification::FoxWolframMoments::Compute(const std::vector<ROOT::Math::XYZVector>& inputVectors)
+void DLBDTMvaVariablesEventClassification::FoxWolframMoments::Compute(const std::vector<ROOT::Math::XYZVector>& inputVectors)
 {
   // initialize
   Reset();
@@ -348,7 +348,7 @@ void MvaVariablesEventClassification::FoxWolframMoments::Compute(const std::vect
     _FWarray(i) = _sumarray(i)/pow(s,2) ;
 }
 
-void MvaVariablesEventClassification::FoxWolframMoments::Reset() 
+void DLBDTMvaVariablesEventClassification::FoxWolframMoments::Reset() 
 {
   for ( int i = 0; i< _nmom; ++i) 
     { 
@@ -357,7 +357,7 @@ void MvaVariablesEventClassification::FoxWolframMoments::Reset()
     }
 }
 
-double MvaVariablesEventClassification::FoxWolframMoments::R( int order ) const
+double DLBDTMvaVariablesEventClassification::FoxWolframMoments::R( int order ) const
 {
   if(H(0) > 0.) {
     if(order < _nmom){ 
@@ -367,7 +367,7 @@ double MvaVariablesEventClassification::FoxWolframMoments::R( int order ) const
   return 0.;
 }
 
-double MvaVariablesEventClassification::FoxWolframMoments::Legendre( int l, int m, double x )
+double DLBDTMvaVariablesEventClassification::FoxWolframMoments::Legendre( int l, int m, double x )
 {
   assert(m >= 0.);
   assert(m <= l);
@@ -411,11 +411,11 @@ double MvaVariablesEventClassification::FoxWolframMoments::Legendre( int l, int 
 }
 
 /// constructor from XYZ coordinates
-MvaVariablesEventClassification::EventShapeVariables::EventShapeVariables(const std::vector<TLorentzVector>& inputVectors) : inputVectors_(makeVecForEventShape(inputVectors))
+DLBDTMvaVariablesEventClassification::EventShapeVariables::EventShapeVariables(const std::vector<TLorentzVector>& inputVectors) : inputVectors_(makeVecForEventShape(inputVectors))
 {}
 
 /// needs the number of steps to determine how fine the granularity of the algorithm in phi should be
-double MvaVariablesEventClassification::EventShapeVariables::isotropy(const unsigned int& numberOfSteps) const
+double DLBDTMvaVariablesEventClassification::EventShapeVariables::isotropy(const unsigned int& numberOfSteps) const
 {
   const double deltaPhi=2*TMath::Pi()/numberOfSteps;
   double phi = 0, eIn =-1., eOut=-1.;
@@ -437,7 +437,7 @@ double MvaVariablesEventClassification::EventShapeVariables::isotropy(const unsi
 }
 
 /// the return value is 1 for spherical and 0 linear events in r-phi.
-double MvaVariablesEventClassification::EventShapeVariables::circularity(const unsigned int& numberOfSteps) const
+double DLBDTMvaVariablesEventClassification::EventShapeVariables::circularity(const unsigned int& numberOfSteps) const
 {
   const double deltaPhi=2*TMath::Pi()/numberOfSteps;
   double circularity=-1, phi=0, area = 0;
@@ -464,7 +464,7 @@ double MvaVariablesEventClassification::EventShapeVariables::circularity(const u
 }
 
 // helper function to fill the 3 dimensional momentum tensor from the inputVecotrs where needed
-TMatrixDSym MvaVariablesEventClassification::EventShapeVariables::compMomentumTensor(double r) const
+TMatrixDSym DLBDTMvaVariablesEventClassification::EventShapeVariables::compMomentumTensor(double r) const
 {
   TMatrixDSym momentumTensor(3);
   momentumTensor.Zero();
@@ -501,7 +501,7 @@ TMatrixDSym MvaVariablesEventClassification::EventShapeVariables::compMomentumTe
 
 /// helper function to fill the 3 dimensional vector of eigen-values;
 /// the largest (smallest) eigen-value is stored at index position 0 (2)
-TVectorD MvaVariablesEventClassification::EventShapeVariables::compEigenValues(double r) const
+TVectorD DLBDTMvaVariablesEventClassification::EventShapeVariables::compEigenValues(double r) const
 {
   TVectorD eigenValues(3);
   TMatrixDSym myTensor = compMomentumTensor(r);
@@ -514,35 +514,35 @@ TVectorD MvaVariablesEventClassification::EventShapeVariables::compEigenValues(d
  }
 
 /// Return values are 1 for spherical, 3/4 for plane and 0 for linear events
-double MvaVariablesEventClassification::EventShapeVariables::sphericity(double r) const
+double DLBDTMvaVariablesEventClassification::EventShapeVariables::sphericity(double r) const
 {
   TVectorD eigenValues = compEigenValues(r);
 
   return 1.5*(eigenValues(1) + eigenValues(2));
 }
 /// Return values are 0.5 for spherical and 0 for plane and linear events
-double MvaVariablesEventClassification::EventShapeVariables::aplanarity(double r) const
+double DLBDTMvaVariablesEventClassification::EventShapeVariables::aplanarity(double r) const
 {
   TVectorD eigenValues = compEigenValues(r);
   
   return 1.5*eigenValues(2);
 }
 /// Return value is between 0 and 1 and measures the 3-jet structure of the event (C vanishes for a "perfect" 2-jet event)
-double MvaVariablesEventClassification::EventShapeVariables::C(double r) const
+double DLBDTMvaVariablesEventClassification::EventShapeVariables::C(double r) const
 {
   TVectorD eigenValues = compEigenValues(r);
   
    return 3.*(eigenValues(0)*eigenValues(1) + eigenValues(0)*eigenValues(2) + eigenValues(1)*eigenValues(2));
 }
 /// Return value is between 0 and 1 and measures the 4-jet structure of the event (D vanishes for a planar event)
-double MvaVariablesEventClassification::EventShapeVariables::D(double r) const
+double DLBDTMvaVariablesEventClassification::EventShapeVariables::D(double r) const
 {
   TVectorD eigenValues = compEigenValues(r);
   
   return 27.*eigenValues(0)*eigenValues(1)*eigenValues(2);
 }
 /// Return value is between 0 and 1, value of 0 is "pencile-like" limit, while 1 for "isotropic-like" limit  
-double MvaVariablesEventClassification::EventShapeVariables::transSphericity(double r) const 
+double DLBDTMvaVariablesEventClassification::EventShapeVariables::transSphericity(double r) const 
 {
   
   TVectorD eigenValues = compEigenValues(r);
@@ -550,7 +550,7 @@ double MvaVariablesEventClassification::EventShapeVariables::transSphericity(dou
   return 2.*eigenValues(1)/(eigenValues(0) + eigenValues(1));
 }
 /// Calcualtes the Fox-Wolfram moment for a given order
-double MvaVariablesEventClassification::EventShapeVariables::H(int i) const 
+double DLBDTMvaVariablesEventClassification::EventShapeVariables::H(int i) const 
 {
 
   FoxWolframMoments fwm(i);
@@ -559,7 +559,7 @@ double MvaVariablesEventClassification::EventShapeVariables::H(int i) const
   return fwm.H(i);
 }
 // Calcualtes the 0-th Fox-Wolfram moment
-double MvaVariablesEventClassification::EventShapeVariables::ZerothMoment() const 
+double DLBDTMvaVariablesEventClassification::EventShapeVariables::ZerothMoment() const 
 {
   FoxWolframMoments fwm(0);
   fwm.Compute(inputVectors_);
@@ -567,7 +567,7 @@ double MvaVariablesEventClassification::EventShapeVariables::ZerothMoment() cons
   return fwm.ZerothMoment();
 }
 // Calculates the ratio between Fox-Wolfram moments
-double MvaVariablesEventClassification::EventShapeVariables::R(int order) const
+double DLBDTMvaVariablesEventClassification::EventShapeVariables::R(int order) const
 {
   
   FoxWolframMoments fwm(order);
@@ -577,7 +577,7 @@ double MvaVariablesEventClassification::EventShapeVariables::R(int order) const
 }
 
 
-MvaVariablesEventClassification* MvaVariablesEventClassification::fillVariables(const std::vector<TLorentzVector>& leptons, const std::vector<double>& selectedLeptonCharge,
+DLBDTMvaVariablesEventClassification* DLBDTMvaVariablesEventClassification::fillVariables(const std::vector<TLorentzVector>& leptons, const std::vector<double>& selectedLeptonCharge,
 				   const std::vector<TLorentzVector>& jets, 
 				   const std::vector<double>& jetBtags, const double btagWP )
 {
@@ -1326,7 +1326,7 @@ MvaVariablesEventClassification* MvaVariablesEventClassification::fillVariables(
     double R3_tag = eventshape_tags.R(3);
     double R4_tag = eventshape_tags.R(4);
 
-    return new MvaVariablesEventClassification(numberOfJets,
+    return new DLBDTMvaVariablesEventClassification(numberOfJets,
                                                btagDiscriminatorAverage_tagged, btagDiscriminatorAverage_untagged,
                                                minDeltaRJetJet, minDeltaRTagTag,
                                                avgDeltaRJetJet, avgDeltaRJetTag, avgDeltaRTagTag,

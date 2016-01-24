@@ -16,8 +16,8 @@
 
 
 // /// Templated struct which defines all relevant parameters for MVA input variables
-// template<class T> struct MvaVariable{
-//     MvaVariable(const char* name):
+// template<class T> struct DLBDTMvaVariable{
+//     DLBDTMvaVariable(const char* name):
 //         branch_(0), name_(name){}
 //     
 // public:
@@ -35,8 +35,8 @@
 
 
 /// Struct which defines all relevant parameters for MVA input variables of type int
-struct MvaVariableInt{
-    MvaVariableInt(const char* name):
+struct DLBDTMvaVariableInt{
+    DLBDTMvaVariableInt(const char* name):
         value_(-999), valueFloat_(-999.F), name_(name){}
     
 public:
@@ -56,8 +56,8 @@ private:
 
 
 /// Struct which defines all relevant parameters for MVA input variables of type float
-struct MvaVariableFloat{
-    MvaVariableFloat(const char* name):
+struct DLBDTMvaVariableFloat{
+    DLBDTMvaVariableFloat(const char* name):
         value_(-999.F), name_(name){}
     
 public:
@@ -76,25 +76,25 @@ private:
 
 
 /// Base class for holding MVA input variables
-class MvaVariablesBase{
+class DLBDTMvaVariablesBase{
     
 public:
     
     /// Empty constructor
-    MvaVariablesBase();
+    DLBDTMvaVariablesBase();
     
     /// Constructor setting up event weight
-//     MvaVariablesBase(const double& eventWeight);
-        MvaVariablesBase(const double& eventWeight);
+//     DLBDTMvaVariablesBase(const double& eventWeight);
+        DLBDTMvaVariablesBase(const double& eventWeight);
 
     /// Destructor
-    virtual ~MvaVariablesBase(){}
+    virtual ~DLBDTMvaVariablesBase(){}
         
     /// Clear the MVA input variables, i.e. delete all pointers properly
-    static void clearVariables(std::vector<MvaVariablesBase*>& v_mvaVariables);
+    static void clearVariables(std::vector<DLBDTMvaVariablesBase*>& v_DLBDTMvaVariables);
 
     /// Event weight including all scale factors
-    MvaVariableFloat eventWeight_;
+    DLBDTMvaVariableFloat eventWeight_;
     
     
     
@@ -116,15 +116,15 @@ namespace tth{
 }*/
 
 
-class MvaVariablesEventClassification : public MvaVariablesBase{
+class DLBDTMvaVariablesEventClassification : public DLBDTMvaVariablesBase{
     
 public:
     
     /// Empty constructor
-    MvaVariablesEventClassification();
+    DLBDTMvaVariablesEventClassification();
     
     /// Constructor setting up input variables from physics objects
-    MvaVariablesEventClassification(const int multiplicity_jets,
+    DLBDTMvaVariablesEventClassification(const int multiplicity_jets,
                                     const double& btagDiscriminatorAverage_tagged,
                                     const double& btagDiscriminatorAverage_untagged,
                                     const double& minDeltaR_jet_jet,
@@ -190,10 +190,10 @@ public:
 				    const double& R4_tag);
     
     /// Destructor
-    ~MvaVariablesEventClassification(){}
+    ~DLBDTMvaVariablesEventClassification(){}
     
     /// Fill the MVA input structs for one event
-    static MvaVariablesEventClassification* fillVariables(const std::vector<TLorentzVector>& leptons, const std::vector<double>& selectedLeptonCharge,
+    static DLBDTMvaVariablesEventClassification* fillVariables(const std::vector<TLorentzVector>& leptons, const std::vector<double>& selectedLeptonCharge,
 				   const std::vector<TLorentzVector>& jets, 
 				   const std::vector<double>& jetBtags, const double btagWP=0.89);
     
@@ -203,84 +203,84 @@ public:
     
     // FIXME: describe each variable in doxygen
     /// Variables for MVA
-    MvaVariableInt multiplicity_jets_;
-    MvaVariableFloat btagDiscriminatorAverage_tagged_;
-    MvaVariableFloat btagDiscriminatorAverage_untagged_;
-    MvaVariableFloat minDeltaR_jet_jet_;
-    MvaVariableFloat minDeltaR_tag_tag_;
-    MvaVariableFloat avgDeltaR_jet_jet_;
-    MvaVariableFloat avgDeltaR_jet_tag_;
-    MvaVariableFloat avgDeltaR_tag_tag_;
-    MvaVariableFloat ptSum_jets_leptons_;
-    MvaVariableInt multiplicity_higgsLikeDijet15_;
-    MvaVariableFloat mass_higgsLikeDijet_;
-    MvaVariableFloat mass_higgsLikeDijet2_;
+    DLBDTMvaVariableInt multiplicity_jets_;
+    DLBDTMvaVariableFloat btagDiscriminatorAverage_tagged_;
+    DLBDTMvaVariableFloat btagDiscriminatorAverage_untagged_;
+    DLBDTMvaVariableFloat minDeltaR_jet_jet_;
+    DLBDTMvaVariableFloat minDeltaR_tag_tag_;
+    DLBDTMvaVariableFloat avgDeltaR_jet_jet_;
+    DLBDTMvaVariableFloat avgDeltaR_jet_tag_;
+    DLBDTMvaVariableFloat avgDeltaR_tag_tag_;
+    DLBDTMvaVariableFloat ptSum_jets_leptons_;
+    DLBDTMvaVariableInt multiplicity_higgsLikeDijet15_;
+    DLBDTMvaVariableFloat mass_higgsLikeDijet_;
+    DLBDTMvaVariableFloat mass_higgsLikeDijet2_;
         
-    MvaVariableFloat mass_jet_jet_min_deltaR_;
-    MvaVariableFloat mass_tag_tag_min_deltaR_;
-    MvaVariableFloat mass_jet_tag_min_deltaR_;
+    DLBDTMvaVariableFloat mass_jet_jet_min_deltaR_;
+    DLBDTMvaVariableFloat mass_tag_tag_min_deltaR_;
+    DLBDTMvaVariableFloat mass_jet_tag_min_deltaR_;
 
-    MvaVariableFloat mass_tag_tag_max_mass_;
-    MvaVariableFloat median_mass_jet_jet_;
+    DLBDTMvaVariableFloat mass_tag_tag_max_mass_;
+    DLBDTMvaVariableFloat median_mass_jet_jet_;
 
-    MvaVariableFloat maxDeltaEta_jet_jet_;
-    MvaVariableFloat maxDeltaEta_tag_tag_;
+    DLBDTMvaVariableFloat maxDeltaEta_jet_jet_;
+    DLBDTMvaVariableFloat maxDeltaEta_tag_tag_;
 
-    MvaVariableFloat HT_jets_;
-    MvaVariableFloat HT_tags_;
+    DLBDTMvaVariableFloat HT_jets_;
+    DLBDTMvaVariableFloat HT_tags_;
 
-    MvaVariableFloat pT_jet_jet_min_deltaR_;
-    MvaVariableFloat pT_jet_tag_min_deltaR_;
-    MvaVariableFloat pT_tag_tag_min_deltaR_;
+    DLBDTMvaVariableFloat pT_jet_jet_min_deltaR_;
+    DLBDTMvaVariableFloat pT_jet_tag_min_deltaR_;
+    DLBDTMvaVariableFloat pT_tag_tag_min_deltaR_;
 
-    MvaVariableFloat mass_jet_jet_jet_max_pT_;
-    MvaVariableFloat mass_jet_tag_tag_max_pT_;
+    DLBDTMvaVariableFloat mass_jet_jet_jet_max_pT_;
+    DLBDTMvaVariableFloat mass_jet_tag_tag_max_pT_;
 
-    MvaVariableFloat centrality_jets_leps_;
-    MvaVariableFloat centrality_tags_;
+    DLBDTMvaVariableFloat centrality_jets_leps_;
+    DLBDTMvaVariableFloat centrality_tags_;
 
-    MvaVariableFloat twist_jet_jet_max_mass_;
-    MvaVariableFloat twist_jet_tag_max_mass_;
-    MvaVariableFloat twist_tag_tag_max_mass_;
+    DLBDTMvaVariableFloat twist_jet_jet_max_mass_;
+    DLBDTMvaVariableFloat twist_jet_tag_max_mass_;
+    DLBDTMvaVariableFloat twist_tag_tag_max_mass_;
 
-    MvaVariableFloat twist_tag_tag_min_deltaR_;
+    DLBDTMvaVariableFloat twist_tag_tag_min_deltaR_;
 
     //Event shape variables
-    MvaVariableFloat sphericity_jet_;
-    MvaVariableFloat aplanarity_jet_;
-    MvaVariableFloat circularity_jet_;
-    MvaVariableFloat isotropy_jet_;
-    MvaVariableFloat C_jet_;
-    MvaVariableFloat D_jet_;
-    MvaVariableFloat transSphericity_jet_;
+    DLBDTMvaVariableFloat sphericity_jet_;
+    DLBDTMvaVariableFloat aplanarity_jet_;
+    DLBDTMvaVariableFloat circularity_jet_;
+    DLBDTMvaVariableFloat isotropy_jet_;
+    DLBDTMvaVariableFloat C_jet_;
+    DLBDTMvaVariableFloat D_jet_;
+    DLBDTMvaVariableFloat transSphericity_jet_;
 
-    MvaVariableFloat sphericity_tag_;
-    MvaVariableFloat aplanarity_tag_;
-    MvaVariableFloat circularity_tag_;
-    MvaVariableFloat isotropy_tag_;
-    MvaVariableFloat C_tag_;
-    MvaVariableFloat D_tag_;
-    MvaVariableFloat transSphericity_tag_;
+    DLBDTMvaVariableFloat sphericity_tag_;
+    DLBDTMvaVariableFloat aplanarity_tag_;
+    DLBDTMvaVariableFloat circularity_tag_;
+    DLBDTMvaVariableFloat isotropy_tag_;
+    DLBDTMvaVariableFloat C_tag_;
+    DLBDTMvaVariableFloat D_tag_;
+    DLBDTMvaVariableFloat transSphericity_tag_;
 
-    MvaVariableFloat H0_jet_;
-    MvaVariableFloat H1_jet_;
-    MvaVariableFloat H2_jet_;
-    MvaVariableFloat H3_jet_;
-    MvaVariableFloat H4_jet_;
-    MvaVariableFloat R1_jet_;
-    MvaVariableFloat R2_jet_;
-    MvaVariableFloat R3_jet_;
-    MvaVariableFloat R4_jet_;
+    DLBDTMvaVariableFloat H0_jet_;
+    DLBDTMvaVariableFloat H1_jet_;
+    DLBDTMvaVariableFloat H2_jet_;
+    DLBDTMvaVariableFloat H3_jet_;
+    DLBDTMvaVariableFloat H4_jet_;
+    DLBDTMvaVariableFloat R1_jet_;
+    DLBDTMvaVariableFloat R2_jet_;
+    DLBDTMvaVariableFloat R3_jet_;
+    DLBDTMvaVariableFloat R4_jet_;
 
-    MvaVariableFloat H0_tag_;
-    MvaVariableFloat H1_tag_;
-    MvaVariableFloat H2_tag_;
-    MvaVariableFloat H3_tag_;
-    MvaVariableFloat H4_tag_;
-    MvaVariableFloat R1_tag_;
-    MvaVariableFloat R2_tag_;
-    MvaVariableFloat R3_tag_;
-    MvaVariableFloat R4_tag_;
+    DLBDTMvaVariableFloat H0_tag_;
+    DLBDTMvaVariableFloat H1_tag_;
+    DLBDTMvaVariableFloat H2_tag_;
+    DLBDTMvaVariableFloat H3_tag_;
+    DLBDTMvaVariableFloat H4_tag_;
+    DLBDTMvaVariableFloat R1_tag_;
+    DLBDTMvaVariableFloat R2_tag_;
+    DLBDTMvaVariableFloat R3_tag_;
+    DLBDTMvaVariableFloat R4_tag_;
 
 
     class EventShapeVariables {

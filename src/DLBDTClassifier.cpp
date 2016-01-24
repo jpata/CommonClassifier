@@ -204,9 +204,9 @@ double DLBDTClassifier::GetBDTOutput(const std::vector<TLorentzVector>& selected
 	}
 	selectedJetCSV_fixed.push_back(tag);
     }
-        std::cout<<"calling  MvaVariablesEventClassification"<<std::endl;
+//        std::cout<<"calling  DLBDTMvaVariablesEventClassification"<<std::endl;
 
-    MvaVariablesEventClassification* dlbdtvar=MvaVariablesEventClassification::fillVariables(selectedLeptonP4, selectedLeptonCharge,selectedJetP4,selectedJetCSV,btagMcut );
+    DLBDTMvaVariablesEventClassification* dlbdtvar=DLBDTMvaVariablesEventClassification::fillVariables(selectedLeptonP4, selectedLeptonCharge,selectedJetP4,selectedJetCSV,btagMcut );
     
     // ==================================================
     // Fill variable map
@@ -276,6 +276,8 @@ double DLBDTClassifier::GetBDTOutput(const std::vector<TLorentzVector>& selected
     variableMap["R4_tag"]=dlbdtvar->R4_tag_.value_;
     // ==================================================
     // evaluate BDT of current category
+
+  delete dlbdtvar;
 //TODO uncomment reader line and delete the next line
 //           return -3.0;
     return readerMap[category]->EvaluateMVA("BDT");
