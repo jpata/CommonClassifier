@@ -605,12 +605,12 @@ DLBDTMvaVariablesEventClassification* DLBDTMvaVariablesEventClassification::fill
     int leptonIndex_;
 
     if(leptons.size()==2 and selectedLeptonCharge.at(0)>=0.0 and selectedLeptonCharge.at(1)<0.0){
-      leptonIndex_=0;
-      antiLeptonIndex_=1;
-    }
-    else if(leptons.size()==2 and selectedLeptonCharge.at(1)>=0.0 and selectedLeptonCharge.at(0)<0.0){
       leptonIndex_=1;
       antiLeptonIndex_=0;
+    }
+    else if(leptons.size()==2 and selectedLeptonCharge.at(1)>=0.0 and selectedLeptonCharge.at(0)<0.0){
+      leptonIndex_=0;
+      antiLeptonIndex_=1;
     } 
     else{
       std::cout<<"!!!!!!!!!!NLeptons not equal two or leptons have same sign!!!!!!!"<<std::endl;
@@ -647,7 +647,7 @@ DLBDTMvaVariablesEventClassification* DLBDTMvaVariablesEventClassification::fill
         for(auto j_index = i_index+1; j_index != jetIndices_.end(); ++j_index){
             const double deltaR = DeltaR(jets.at(*i_index), jets.at(*j_index));
             if(deltaR < minDeltaRJetJet) minDeltaRJetJet = deltaR;
-        }++
+        }
         
         // Scalar sum of pt of all jets
         ptSumJets += jets.at(*i_index).Pt();
