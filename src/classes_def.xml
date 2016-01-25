@@ -2,6 +2,8 @@
 	<class name="MEMClassifier"/>
 	<class name="BDTClassifier"/>
 	<class name="DLBDTClassifier"/>
-
+	<class name="BlrBDTClassifier"/>
+	<class name="MEMBDTClassifier"/>
+	
 	<class name="MEMResult"/>
 </lcgdict>
