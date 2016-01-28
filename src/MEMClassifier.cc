@@ -35,6 +35,8 @@ void MEMClassifier::setup_mem(
     GetBTagLikelihoodRatio(
         selectedJetP4, selectedJetCSV, best_perm, blr_4b, blr_2b
     );
+    assert(best_perm.size() >= 4);
+
     res.blr_4b = blr_4b;
     res.blr_2b = blr_2b;
     
@@ -44,12 +46,13 @@ void MEMClassifier::setup_mem(
     for (unsigned int ij=0; ij<std::min(selectedJetP4.size(), numMaxJets); ij++) {
         TLorentzVector p4 = selectedJetP4.at(ij);
         assert(p4.Pt() > 0);
-        //Check if this jet was in the best 4b permutation
+        //Check if this jet was in the best 4b permutation, i.e. the first 4 indices of the permutation
         auto last = best_perm.begin() + 4;
         bool is_btagged = std::find(best_perm.begin(), last, ij) != last;
 
         MEM::Object* jet = make_jet(
-            p4.Pt(), p4.Eta(), p4.Phi(), p4.M(), is_btagged ? 1.0 : 0.0, selectedJetCSV.at(ij)
+            p4.Pt(), p4.Eta(), p4.Phi(), p4.M(), is_btagged ? 1.0 : 0.0,
+            selectedJetCSV.at(ij)
         );
         if (is_btagged) {
             tagged.push_back(jet);
@@ -59,9 +62,11 @@ void MEMClassifier::setup_mem(
         //objs.push_back(jet);
         //integrand->push_back_object(jet);
     }
+    assert(tagged.size() == 4);
     for (auto* jet : tagged) {
         objs.push_back(jet);
         integrand->push_back_object(jet);
+        std::cout << "adding jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
     }
 
     //Ignore the untagged jets
@@ -96,12 +101,23 @@ MEMResult MEMClassifier::GetOutput(
     
     MEMResult res;
 
-    setup_mem(selectedLeptonP4, selectedLeptonCharge, selectedJetP4, selectedJetCSV, looseSelectedJetP4, looseSelectedJetCSV, metP4, objs, res);
+    setup_mem(
+        selectedLeptonP4,
+        selectedLeptonCharge,
+        selectedJetP4,
+        selectedJetCSV,
+        looseSelectedJetP4,
+        looseSelectedJetCSV,
+        metP4, objs, res
+    );
+    std::cout << "MEM running signal" << std::endl;
     MEM::MEMOutput res_sig = integrand->run(
         MEM::FinalState::LH, MEM::Hypothesis::TTH, {}, {
             MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1
         }
     );
+
+    std::cout << "MEM running background" << std::endl;
     MEM::MEMOutput res_bkg = integrand->run(
         MEM::FinalState::LH, MEM::Hypothesis::TTBB, {}, {
             MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1
@@ -249,6 +265,7 @@ double MEMClassifier::GetBTagLikelihoodRatio(
     double& out_P_4b,
     double& out_P_2b
     ) {
+    assert(selectedJetP4.size() >= 4);
     for (unsigned int ij=0; ij < min(selectedJetP4.size(), numMaxJetsBLR); ij++) {
         blr->push_back_object(GetJetBProbabilities(selectedJetP4[ij], selectedJetCSV[ij]));
     }
