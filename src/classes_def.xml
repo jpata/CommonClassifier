@@ -3,6 +3,7 @@
 	<class name="BDTClassifier"/>
 	<class name="BlrBDTClassifier"/>
 	<class name="MEMBDTClassifier"/>
+	<class name="DLBDTClassifier"/>
 	<class name="MEMBDTClassifierV2"/>
 	
 	<class name="MEMResult"/>
