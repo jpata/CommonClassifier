@@ -20,9 +20,10 @@ void MEMClassifier::setup_mem(
 
     integrand->set_cfg(cfg);
     integrand->set_permutation_strategy
-    ({MEM::Permutations::BTagged,
+    ({
+      MEM::Permutations::QQbarBBbarSymmetry,
       MEM::Permutations::QUntagged,
-      MEM::Permutations::QQbarBBbarSymmetry
+      MEM::Permutations::BTagged,
     });
 
     switch (hypo){
@@ -230,7 +231,13 @@ void MEMClassifier::setup_mem_sl_2w2h2t_sj(
     for (auto* jet : tagged) {
         objs.push_back(jet);
         integrand->push_back_object(jet);
-        std::cout << "adding jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
+        std::cout << "adding tagged jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
+    }
+
+    for (auto* jet : untagged) {
+        objs.push_back(jet);
+        integrand->push_back_object(jet);
+        std::cout << "adding untagged jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
     }
 
     for (unsigned int il=0; il < selectedLeptonP4.size(); il++) {
@@ -427,12 +434,12 @@ MEMClassifier::MEMClassifier() : cfg(MEM::MEMConfig()) {
     cfg.add_distribution_global(MEM::DistributionType::DistributionType::csv_l, GetBTagPDF("l"));
 
     integrand = new MEM::Integrand(
-        0
-        //MEM::DebugVerbosity::output
-        //|MEM::DebugVerbosity::init
-        //|MEM::DebugVerbosity::input
-        //|MEM::DebugVerbosity::init_more
-        // |MEM::DebugVerbosity::integration
+				   0
+				   //MEM::DebugVerbosity::output
+				   //|MEM::DebugVerbosity::init
+				   //|MEM::DebugVerbosity::input
+				   //|MEM::DebugVerbosity::init_more
+        //|MEM::DebugVerbosity::integration
         ,cfg
     );
     integrand->set_cfg(cfg);
