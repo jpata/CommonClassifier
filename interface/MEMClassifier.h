@@ -49,6 +49,7 @@ public:
     DEBUG,         // Don't run the MEM. Print debug info
     SL_0W2H2T,     // Default SL MEM: Integrate over light jets
     SL_2W2H2T_SJ,  // Boosted SL MEM: 2 light jets + bjets
+    DL_0W2H2T,     // Default DL MEM
   };
 
 
@@ -106,6 +107,16 @@ public:
     const std::vector<JetType>& selectedJetType,
     const std::vector<TLorentzVector>& looseSelectedJetP4,
     const std::vector<double>& looseSelectedJetCSV,
+    TLorentzVector& metP4,
+    std::vector<MEM::Object*>& objs,
+    MEMResult& res
+  );
+  
+  void setup_mem_dl_0w2h2t(
+    const std::vector<TLorentzVector>& selectedLeptonP4,
+    const std::vector<double>& selectedLeptonCharge,
+    const std::vector<TLorentzVector>& selectedJetP4,
+    const std::vector<double>& selectedJetCSV,
     TLorentzVector& metP4,
     std::vector<MEM::Object*>& objs,
     MEMResult& res
