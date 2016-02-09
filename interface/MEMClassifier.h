@@ -1,3 +1,4 @@
+
 #ifndef MEMCLASSIFIER_H
 #define MEMCLASSIFIER_H
 
@@ -31,30 +32,91 @@ public:
 class MEMClassifier{
   
 public:
+  
+  // Jet type: Needed to decide:
+  //   - which jets to put into which slot of the MEM
+  //   - which transfer function to use
+  enum JetType
+  {
+    RESOLVED,
+    BOOSTED_LIGHT,
+    BOOSTED_B
+  };
+
+  // Hypothesis
+  enum Hypothesis
+  {
+    DEBUG,         // Don't run the MEM. Print debug info
+    SL_0W2H2T,     // Default SL MEM: Integrate over light jets
+    SL_2W2H2T_SJ,  // Boosted SL MEM: 2 light jets + bjets
+    DL_0W2H2T,     // Default DL MEM
+  };
+
 
   //The constructor loads the transfer functions and b-tag PDF-s
   MEMClassifier();
   ~MEMClassifier();
 
-  // Call this method to return the BDT output, provide all necessary inputs. Jet CSV should be sorted the same way as jet p4. 
-  // We could also write a class to contain the jet CSV and p4 information
+  // Call this method to return the MEM output, provide all necessary inputs. 
+  // Jet CSV and type should be sorted the same way as jet p4. 
+  // We could also write a class to contain the jet CSV, type, and p4 information
   MEMResult GetOutput(
+    const Hypothesis hypo,
     const std::vector<TLorentzVector>& selectedLeptonP4,
     const std::vector<double>& selectedLeptonCharge,
     const std::vector<TLorentzVector>& selectedJetP4,
     const std::vector<double>& selectedJetCSV,
+    const std::vector<JetType>& selectedJetType,
     const std::vector<TLorentzVector>& looseSelectedJetP4,
     const std::vector<double>& looseSelectedJetCSV,
     TLorentzVector& metP4
   );
   
   void setup_mem(
+    const Hypothesis hypo,
     const std::vector<TLorentzVector>& selectedLeptonP4,
     const std::vector<double>& selectedLeptonCharge,
     const std::vector<TLorentzVector>& selectedJetP4,
     const std::vector<double>& selectedJetCSV,
+    const std::vector<JetType>& selectedJetType,
     const std::vector<TLorentzVector>& looseSelectedJetP4,
     const std::vector<double>& looseSelectedJetCSV,
+    TLorentzVector& metP4,
+    std::vector<MEM::Object*>& objs,
+    MEMResult& res
+  );
+
+  void setup_mem_sl_0w2h2t(
+    const std::vector<TLorentzVector>& selectedLeptonP4,
+    const std::vector<double>& selectedLeptonCharge,
+    const std::vector<TLorentzVector>& selectedJetP4,
+    const std::vector<double>& selectedJetCSV,
+    const std::vector<JetType>& selectedJetType,
+    const std::vector<TLorentzVector>& looseSelectedJetP4,
+    const std::vector<double>& looseSelectedJetCSV,
+    TLorentzVector& metP4,
+    std::vector<MEM::Object*>& objs,
+    MEMResult& res
+  );
+
+  void setup_mem_sl_2w2h2t_sj(
+    const std::vector<TLorentzVector>& selectedLeptonP4,
+    const std::vector<double>& selectedLeptonCharge,
+    const std::vector<TLorentzVector>& selectedJetP4,
+    const std::vector<double>& selectedJetCSV,
+    const std::vector<JetType>& selectedJetType,
+    const std::vector<TLorentzVector>& looseSelectedJetP4,
+    const std::vector<double>& looseSelectedJetCSV,
+    TLorentzVector& metP4,
+    std::vector<MEM::Object*>& objs,
+    MEMResult& res
+  );
+  
+  void setup_mem_dl_0w2h2t(
+    const std::vector<TLorentzVector>& selectedLeptonP4,
+    const std::vector<double>& selectedLeptonCharge,
+    const std::vector<TLorentzVector>& selectedJetP4,
+    const std::vector<double>& selectedJetCSV,
     TLorentzVector& metP4,
     std::vector<MEM::Object*>& objs,
     MEMResult& res
@@ -76,7 +138,7 @@ private:
   MEM::JetLikelihood* blr;
 
   //Convenience functions to construct MEM input objects
-  MEM::Object* make_jet(double pt, double eta, double phi, double mass, double istagged, double csv) const;
+  MEM::Object* make_jet(double pt, double eta, double phi, double mass, double istagged, double csv, bool is_subjet) const;
   MEM::Object* make_lepton(double pt, double eta, double phi, double mass, double charge) const;
   
   // Returns the transfer function corresponding to a jet flavour and eta
