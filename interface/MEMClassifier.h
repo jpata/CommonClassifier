@@ -9,153 +9,165 @@
 #include "TLorentzVector.h"
 
 class MEMResult {
-public:
-  double blr_4b;
-  double blr_2b;
+  public:
+    double blr_4b;
+    double blr_2b;
 
-  //likelihood ratio
-  double p;
+    //likelihood ratio
+    double p;
 
-  //individual signal and background probabilities
-  double p_sig;
-  double p_bkg;
+    //individual signal and background probabilities
+    double p_sig;
+    double p_bkg;
 
-  //Integration uncertainties of the probabilities
-  double p_err_sig;
-  double p_err_bkg;
-  
-  //Number of permutations per hypothesis 
-  double n_perm_sig;
-  double n_perm_bkg;
+    //Integration uncertainties of the probabilities
+    double p_err_sig;
+    double p_err_bkg;
+
+    //Number of permutations per hypothesis
+    double n_perm_sig;
+    double n_perm_bkg;
 };
 
-class MEMClassifier{
-  
-public:
-  
-  // Jet type: Needed to decide:
-  //   - which jets to put into which slot of the MEM
-  //   - which transfer function to use
-  enum JetType
-  {
-    RESOLVED,
-    BOOSTED_LIGHT,
-    BOOSTED_B
-  };
+class MEMClassifier {
 
-  // Hypothesis
-  enum Hypothesis
-  {
-    DEBUG,         // Don't run the MEM. Print debug info
-    SL_0W2H2T,     // Default SL MEM: Integrate over light jets
-    SL_2W2H2T_SJ,  // Boosted SL MEM: 2 light jets + bjets
-    DL_0W2H2T,     // Default DL MEM
-  };
+  public:
+
+    // Jet type: Needed to decide:
+    //   - which jets to put into which slot of the MEM
+    //   - which transfer function to use
+    enum JetType {
+        RESOLVED,
+        BOOSTED_LIGHT,
+        BOOSTED_B
+    };
+
+    // Hypothesis
+    enum Hypothesis {
+        DEBUG,         // Don't run the MEM. Print debug info
+        SL_0W2H2T,     // Default SL MEM: Integrate over light jets
+        SL_2W2H2T,     // Fully reconstructed hypothesis
+        SL_2W2H2T_SJ,  // Boosted SL MEM: 2 light jets + bjets
+        DL_0W2H2T,     // Default DL MEM
+    };
 
 
-  //The constructor loads the transfer functions and b-tag PDF-s
-  MEMClassifier();
-  ~MEMClassifier();
+    //The constructor loads the transfer functions and b-tag PDF-s
+    MEMClassifier();
+    ~MEMClassifier();
 
-  // Call this method to return the MEM output, provide all necessary inputs. 
-  // Jet CSV and type should be sorted the same way as jet p4. 
-  // We could also write a class to contain the jet CSV, type, and p4 information
-  MEMResult GetOutput(
-    const Hypothesis hypo,
-    const std::vector<TLorentzVector>& selectedLeptonP4,
-    const std::vector<double>& selectedLeptonCharge,
-    const std::vector<TLorentzVector>& selectedJetP4,
-    const std::vector<double>& selectedJetCSV,
-    const std::vector<JetType>& selectedJetType,
-    const std::vector<TLorentzVector>& looseSelectedJetP4,
-    const std::vector<double>& looseSelectedJetCSV,
-    TLorentzVector& metP4
-  );
-  
-  void setup_mem(
-    const Hypothesis hypo,
-    const std::vector<TLorentzVector>& selectedLeptonP4,
-    const std::vector<double>& selectedLeptonCharge,
-    const std::vector<TLorentzVector>& selectedJetP4,
-    const std::vector<double>& selectedJetCSV,
-    const std::vector<JetType>& selectedJetType,
-    const std::vector<TLorentzVector>& looseSelectedJetP4,
-    const std::vector<double>& looseSelectedJetCSV,
-    TLorentzVector& metP4,
-    std::vector<MEM::Object*>& objs,
-    MEMResult& res
-  );
+    // Call this method to return the MEM output, provide all necessary inputs.
+    // Jet CSV and type should be sorted the same way as jet p4.
+    // We could also write a class to contain the jet CSV, type, and p4 information
+    MEMResult GetOutput(
+        const Hypothesis hypo,
+        const std::vector<TLorentzVector>& selectedLeptonP4,
+        const std::vector<double>& selectedLeptonCharge,
+        const std::vector<TLorentzVector>& selectedJetP4,
+        const std::vector<double>& selectedJetCSV,
+        const std::vector<JetType>& selectedJetType,
+        const std::vector<TLorentzVector>& looseSelectedJetP4,
+        const std::vector<double>& looseSelectedJetCSV,
+        TLorentzVector& metP4
+    );
 
-  void setup_mem_sl_0w2h2t(
-    const std::vector<TLorentzVector>& selectedLeptonP4,
-    const std::vector<double>& selectedLeptonCharge,
-    const std::vector<TLorentzVector>& selectedJetP4,
-    const std::vector<double>& selectedJetCSV,
-    const std::vector<JetType>& selectedJetType,
-    const std::vector<TLorentzVector>& looseSelectedJetP4,
-    const std::vector<double>& looseSelectedJetCSV,
-    TLorentzVector& metP4,
-    std::vector<MEM::Object*>& objs,
-    MEMResult& res
-  );
+    void setup_mem(
+        const Hypothesis hypo,
+        const std::vector<TLorentzVector>& selectedLeptonP4,
+        const std::vector<double>& selectedLeptonCharge,
+        const std::vector<TLorentzVector>& selectedJetP4,
+        const std::vector<double>& selectedJetCSV,
+        const std::vector<JetType>& selectedJetType,
+        const std::vector<TLorentzVector>& looseSelectedJetP4,
+        const std::vector<double>& looseSelectedJetCSV,
+        TLorentzVector& metP4,
+        std::vector<MEM::Object*>& objs,
+        MEMResult& res
+    );
 
-  void setup_mem_sl_2w2h2t_sj(
-    const std::vector<TLorentzVector>& selectedLeptonP4,
-    const std::vector<double>& selectedLeptonCharge,
-    const std::vector<TLorentzVector>& selectedJetP4,
-    const std::vector<double>& selectedJetCSV,
-    const std::vector<JetType>& selectedJetType,
-    const std::vector<TLorentzVector>& looseSelectedJetP4,
-    const std::vector<double>& looseSelectedJetCSV,
-    TLorentzVector& metP4,
-    std::vector<MEM::Object*>& objs,
-    MEMResult& res
-  );
-  
-  void setup_mem_dl_0w2h2t(
-    const std::vector<TLorentzVector>& selectedLeptonP4,
-    const std::vector<double>& selectedLeptonCharge,
-    const std::vector<TLorentzVector>& selectedJetP4,
-    const std::vector<double>& selectedJetCSV,
-    TLorentzVector& metP4,
-    std::vector<MEM::Object*>& objs,
-    MEMResult& res
-  );
+    void setup_mem_sl_0w2h2t(
+        const std::vector<TLorentzVector>& selectedLeptonP4,
+        const std::vector<double>& selectedLeptonCharge,
+        const std::vector<TLorentzVector>& selectedJetP4,
+        const std::vector<double>& selectedJetCSV,
+        const std::vector<JetType>& selectedJetType,
+        const std::vector<TLorentzVector>& looseSelectedJetP4,
+        const std::vector<double>& looseSelectedJetCSV,
+        TLorentzVector& metP4,
+        std::vector<MEM::Object*>& objs,
+        MEMResult& res
+    );
 
-  // returns the category of the last evaluated Event
-  std::string GetCategoryOfLastEvaluation() const;
+    void setup_mem_sl_2w2h2t_sj(
+        const std::vector<TLorentzVector>& selectedLeptonP4,
+        const std::vector<double>& selectedLeptonCharge,
+        const std::vector<TLorentzVector>& selectedJetP4,
+        const std::vector<double>& selectedJetCSV,
+        const std::vector<JetType>& selectedJetType,
+        const std::vector<TLorentzVector>& looseSelectedJetP4,
+        const std::vector<double>& looseSelectedJetCSV,
+        TLorentzVector& metP4,
+        std::vector<MEM::Object*>& objs,
+        MEMResult& res
+    );
 
-private:
-  //Holds the transfer functions
-  TFile* transfers;
-  //holds the b-tag PDF-s
-  TFile* btagfile;
+    void setup_mem_sl_2w2h2t(
+        const std::vector<TLorentzVector>& selectedLeptonP4,
+        const std::vector<double>& selectedLeptonCharge,
+        const std::vector<TLorentzVector>& selectedJetP4,
+        const std::vector<double>& selectedJetCSV,
+        const std::vector<JetType>& selectedJetType,
+        const std::vector<TLorentzVector>& looseSelectedJetP4,
+        const std::vector<double>& looseSelectedJetCSV,
+        TLorentzVector& metP4,
+        std::vector<MEM::Object*>& objs,
+        MEMResult& res
+    );
 
-  //This is the MEM workhorse from the ETH side
-  MEM::Integrand* integrand;
-  MEM::MEMConfig cfg;
+    void setup_mem_dl_0w2h2t(
+        const std::vector<TLorentzVector>& selectedLeptonP4,
+        const std::vector<double>& selectedLeptonCharge,
+        const std::vector<TLorentzVector>& selectedJetP4,
+        const std::vector<double>& selectedJetCSV,
+        TLorentzVector& metP4,
+        std::vector<MEM::Object*>& objs,
+        MEMResult& res
+    );
 
-  MEM::JetLikelihood* blr;
+    // returns the category of the last evaluated Event
+    std::string GetCategoryOfLastEvaluation() const;
 
-  //Convenience functions to construct MEM input objects
-  MEM::Object* make_jet(double pt, double eta, double phi, double mass, double istagged, double csv, bool is_subjet) const;
-  MEM::Object* make_lepton(double pt, double eta, double phi, double mass, double charge) const;
-  
-  // Returns the transfer function corresponding to a jet flavour and eta
-  TF1* getTransferFunction(const char* flavour, double eta) const;
-  double GetJetBProbability(const char* flavour, double pt, double eta, double bdisc);
-  MEM::JetProbability GetJetBProbabilities(const TLorentzVector& p4, double bdisc);
-  double GetBTagLikelihoodRatio(
-    const std::vector<TLorentzVector>& selectedJetP4,
-    const std::vector<double>& selectedJetCSV,
-    std::vector<unsigned int>& out_best_perm,
-    double& out_P_4b,
-    double& out_P_2b
-  );
-  TH3D* GetBTagPDF(const char* flavour);
+  private:
+    //Holds the transfer functions
+    TFile* transfers;
+    //holds the b-tag PDF-s
+    TFile* btagfile;
 
-  long unsigned int numMaxJets = 8;
-  long unsigned int numMaxJetsBLR = 8;
+    //This is the MEM workhorse from the ETH side
+    MEM::Integrand* integrand;
+    MEM::MEMConfig cfg;
+
+    MEM::JetLikelihood* blr;
+
+    //Convenience functions to construct MEM input objects
+    MEM::Object* make_jet(double pt, double eta, double phi, double mass, double istagged, double csv, bool is_subjet) const;
+    MEM::Object* make_lepton(double pt, double eta, double phi, double mass, double charge) const;
+
+    // Returns the transfer function corresponding to a jet flavour and eta
+    TF1* getTransferFunction(const char* flavour, double eta) const;
+    double GetJetBProbability(const char* flavour, double pt, double eta, double bdisc);
+    MEM::JetProbability GetJetBProbabilities(const TLorentzVector& p4, double bdisc);
+    double GetBTagLikelihoodRatio(
+        const std::vector<TLorentzVector>& selectedJetP4,
+        const std::vector<double>& selectedJetCSV,
+        std::vector<unsigned int>& out_best_perm,
+        double& out_P_4b,
+        double& out_P_2b
+    );
+    TH3D* GetBTagPDF(const char* flavour);
+
+    long unsigned int numMaxJets = 8;
+    long unsigned int numMaxJetsBLR = 8;
 };
 
 #endif
