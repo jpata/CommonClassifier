@@ -4,9 +4,9 @@
 
 using namespace std;
 
-DLBDTClassifier::DLBDTClassifier (string weightpath):btagMcut(0.89){
+DLBDTClassifier::DLBDTClassifier (string weightpath):btagMcut(0.8){
   //TODO put BDT weights into path and correct path name maybe
-    if(weightpath=="") weightpath=string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/dlbdtweights_v1/";
+    if(weightpath=="") weightpath=string(getenv("CMSSW_BASE"))+"/src/TTH/CommonClassifier/data/dlbdtweights_v2/";
     // ==================================================
     //init all variables potentially used in BDT set
     variableMap["multiplicity_jets"]=-999.;
@@ -80,6 +80,8 @@ DLBDTClassifier::DLBDTClassifier (string weightpath):btagMcut(0.89){
     readerMap["cate1"]=new TMVA::Reader("Silent");
     readerMap["cate2"]=new TMVA::Reader("Silent");
     readerMap["cate3"]=new TMVA::Reader("Silent");
+    readerMap["cate4"]=new TMVA::Reader("Silent");
+    
     
     // ==================================================
     //add variables to corresponding readers
@@ -94,51 +96,68 @@ DLBDTClassifier::DLBDTClassifier (string weightpath):btagMcut(0.89){
     readerMap["cate0"]->AddVariable("mass_tag_tag_min_deltaR", &variableMap["mass_tag_tag_min_deltaR"]);
     
     // cate1 3j3t ??
-    readerMap["cate1"]->AddVariable("mass_tag_tag_min_deltaR", &variableMap["mass_tag_tag_min_deltaR"]);
-    readerMap["cate1"]->AddVariable("ptSum_jets_leptons", &variableMap["ptSum_jets_leptons"]);
-    readerMap["cate1"]->AddVariable("btagDiscriminatorAverage_untagged", &variableMap["btagDiscriminatorAverage_untagged"]);
     readerMap["cate1"]->AddVariable("btagDiscriminatorAverage_tagged", &variableMap["btagDiscriminatorAverage_tagged"]);
+    readerMap["cate1"]->AddVariable("mass_tag_tag_min_deltaR", &variableMap["mass_tag_tag_min_deltaR"]);
     readerMap["cate1"]->AddVariable("mass_tag_tag_max_mass", &variableMap["mass_tag_tag_max_mass"]);
-    readerMap["cate1"]->AddVariable("maxDeltaEta_tag_tag", &variableMap["maxDeltaEta_tag_tag"]);
-    readerMap["cate1"]->AddVariable("median_mass_jet_jet", &variableMap["median_mass_jet_jet"]);
-    readerMap["cate1"]->AddVariable("minDeltaR_tag_tag", &variableMap["minDeltaR_tag_tag"]);
-    readerMap["cate1"]->AddVariable("twist_jet_tag_max_mass", &variableMap["twist_jet_tag_max_mass"]);
+    readerMap["cate1"]->AddVariable("maxDeltaEta_jet_jet", &variableMap["maxDeltaEta_jet_jet"]);
     readerMap["cate1"]->AddVariable("R4_tag", &variableMap["R4_tag"]);
-    readerMap["cate1"]->AddVariable("avgDeltaR_tag_tag", &variableMap["avgDeltaR_tag_tag"]);
+    readerMap["cate1"]->AddVariable("H1_jet", &variableMap["H1_jet"]);
+    readerMap["cate1"]->AddVariable("twist_jet_jet_max_mass", &variableMap["twist_jet_jet_max_mass"]);
+    readerMap["cate1"]->AddVariable("ptSum_jets_leptons", &variableMap["ptSum_jets_leptons"]);
+    readerMap["cate1"]->AddVariable("minDeltaR_jet_jet", &variableMap["minDeltaR_jet_jet"]);
+    readerMap["cate1"]->AddVariable("mass_higgsLikeDijet2", &variableMap["mass_higgsLikeDijet2"]);
 
     // cate2 4j2t ??
-    readerMap["cate2"]->AddVariable("mass_higgsLikeDijet", &variableMap["mass_higgsLikeDijet"]);
-    readerMap["cate2"]->AddVariable("HT_jets", &variableMap["HT_jets"]);
-    readerMap["cate2"]->AddVariable("avgDeltaR_jet_tag", &variableMap["avgDeltaR_jet_tag"]);
-    readerMap["cate2"]->AddVariable("maxDeltaEta_jet_jet", &variableMap["maxDeltaEta_jet_jet"]);
-    readerMap["cate2"]->AddVariable("twist_jet_jet_max_mass", &variableMap["twist_jet_jet_max_mass"]);
-    readerMap["cate2"]->AddVariable("mass_tag_tag_min_deltaR", &variableMap["mass_tag_tag_min_deltaR"]);
-    readerMap["cate2"]->AddVariable("R4_tag", &variableMap["R4_tag"]);
-    readerMap["cate2"]->AddVariable("ptSum_jets_leptons", &variableMap["ptSum_jets_leptons"]);
+    readerMap["cate2"]->AddVariable("median_mass_jet_jet", &variableMap["median_mass_jet_jet"]);
+    readerMap["cate2"]->AddVariable("R1_tag", &variableMap["R1_tag"]);
+    readerMap["cate2"]->AddVariable("mass_jet_jet_min_deltaR", &variableMap["mass_jet_jet_min_deltaR"]);
     readerMap["cate2"]->AddVariable("btagDiscriminatorAverage_untagged", &variableMap["btagDiscriminatorAverage_untagged"]);
-    readerMap["cate2"]->AddVariable("pT_tag_tag_min_deltaR", &variableMap["pT_tag_tag_min_deltaR"]);
-    readerMap["cate2"]->AddVariable("minDeltaR_jet_jet", &variableMap["minDeltaR_jet_jet"]);
-    readerMap["cate2"]->AddVariable("centrality_jets_leps", &variableMap["centrality_jets_leps"]);
+    readerMap["cate2"]->AddVariable("H2_jet", &variableMap["H2_jet"]);
+    readerMap["cate2"]->AddVariable("ptSum_jets_leptons", &variableMap["ptSum_jets_leptons"]);
+    readerMap["cate2"]->AddVariable("avgDeltaR_jet_tag", &variableMap["avgDeltaR_jet_tag"]);
+    readerMap["cate2"]->AddVariable("HT_jets", &variableMap["HT_jets"]);
+    readerMap["cate2"]->AddVariable("mass_tag_tag_min_deltaR", &variableMap["mass_tag_tag_min_deltaR"]);
+    readerMap["cate2"]->AddVariable("pT_jet_tag_min_deltaR", &variableMap["pT_jet_tag_min_deltaR"]);
+
 
     // cate3 4j4t ??
-    readerMap["cate3"]->AddVariable("mass_tag_tag_min_deltaR", &variableMap["mass_tag_tag_min_deltaR"]);
-    readerMap["cate3"]->AddVariable("maxDeltaEta_tag_tag", &variableMap["maxDeltaEta_tag_tag"]);
-    readerMap["cate3"]->AddVariable("median_mass_jet_jet", &variableMap["median_mass_jet_jet"]);
+    readerMap["cate3"]->AddVariable("minDeltaR_tag_tag", &variableMap["minDeltaR_tag_tag"]);
+    readerMap["cate3"]->AddVariable("btagDiscriminatorAverage_untagged", &variableMap["btagDiscriminatorAverage_untagged"]);
     readerMap["cate3"]->AddVariable("btagDiscriminatorAverage_tagged", &variableMap["btagDiscriminatorAverage_tagged"]);
-    readerMap["cate3"]->AddVariable("HT_jets", &variableMap["HT_jets"]);
-    readerMap["cate3"]->AddVariable("mass_higgsLikeDijet2", &variableMap["mass_higgsLikeDijet2"]);
-    readerMap["cate3"]->AddVariable("maxDeltaEta_jet_jet", &variableMap["maxDeltaEta_jet_jet"]);
-    readerMap["cate3"]->AddVariable("sphericity_jet", &variableMap["sphericity_jet"]);
+    readerMap["cate3"]->AddVariable("mass_tag_tag_min_deltaR", &variableMap["mass_tag_tag_min_deltaR"]);
+    readerMap["cate3"]->AddVariable("mass_higgsLikeDijet", &variableMap["mass_higgsLikeDijet"]);
+    readerMap["cate3"]->AddVariable("maxDeltaEta_tag_tag", &variableMap["maxDeltaEta_tag_tag"]);
+    readerMap["cate3"]->AddVariable("avgDeltaR_jet_tag", &variableMap["avgDeltaR_jet_tag"]);
+    readerMap["cate3"]->AddVariable("H2_tag", &variableMap["H2_tag"]);
+    readerMap["cate3"]->AddVariable("ptSum_jets_leptons", &variableMap["ptSum_jets_leptons"]);
+    readerMap["cate3"]->AddVariable("twist_tag_tag_max_mass", &variableMap["twist_tag_tag_max_mass"]);
+    readerMap["cate3"]->AddVariable("centrality_jets_leps", &variableMap["centrality_jets_leps"]);
     readerMap["cate3"]->AddVariable("mass_jet_jet_jet_max_pT", &variableMap["mass_jet_jet_jet_max_pT"]);
 
+       // cate4 ??
+    readerMap["cate4"]->AddVariable("mass_tag_tag_min_deltaR", &variableMap["mass_tag_tag_min_deltaR"]);
+    readerMap["cate4"]->AddVariable("median_mass_jet_jet", &variableMap["median_mass_jet_jet"]);
+    readerMap["cate4"]->AddVariable("maxDeltaEta_tag_tag", &variableMap["maxDeltaEta_tag_tag"]);
+    readerMap["cate4"]->AddVariable("mass_higgsLikeDijet", &variableMap["mass_higgsLikeDijet"]);
+    readerMap["cate4"]->AddVariable("HT_tags", &variableMap["HT_tags"]);
+    readerMap["cate4"]->AddVariable("btagDiscriminatorAverage_tagged", &variableMap["btagDiscriminatorAverage_tagged"]);
+    readerMap["cate4"]->AddVariable("mass_jet_tag_min_deltaR", &variableMap["mass_jet_tag_min_deltaR"]);
+    readerMap["cate4"]->AddVariable("mass_jet_jet_min_deltaR", &variableMap["mass_jet_jet_min_deltaR"]);
+    readerMap["cate4"]->AddVariable("mass_tag_tag_max_mass", &variableMap["mass_tag_tag_max_mass"]);
+    readerMap["cate4"]->AddVariable("maxDeltaEta_jet_jet", &variableMap["maxDeltaEta_jet_jet"]);
+    readerMap["cate4"]->AddVariable("centrality_jets_leps", &variableMap["centrality_jets_leps"]);
+    readerMap["cate4"]->AddVariable("centrality_tags", &variableMap["centrality_tags"]);
+    
     // ==================================================
     
 //TODO uncomment the reader booking if weights are available
     //book MVAs from weights 
-    readerMap["cate0"]->BookMVA("BDT",weightpath+"/classification_step7_cate0_d5.weights.xml");
+    readerMap["cate0"]->BookMVA("BDT",weightpath+"/classification_step7_cate0_d1.weights.xml");
     readerMap["cate1"]->BookMVA("BDT",weightpath+"/classification_step7_cate1_k1001.weights.xml");
     readerMap["cate2"]->BookMVA("BDT",weightpath+"/classification_step7_cate2_k2001.weights.xml");
     readerMap["cate3"]->BookMVA("BDT",weightpath+"/classification_step7_cate3_k3001.weights.xml");
+    readerMap["cate4"]->BookMVA("BDT",weightpath+"/classification_step7_cate4_k4001.weights.xml");
+    
 }
 DLBDTClassifier::~DLBDTClassifier(){
 }
@@ -164,14 +183,17 @@ void DLBDTClassifier::SetCategory(const std::vector<TLorentzVector>& selectedLep
     else if(ntagged==2&&njets==3){
 	category =  "cate0"; 
     }
-    else if(ntagged==3&&njets>=3){
+    else if(ntagged==3&&njets==3){
 	category =  "cate1"; 
     }
     else if(ntagged==2&&njets>=4){
 	category =  "cate2"; 
     }
-    else if(ntagged>=4&&njets>=4){
+    else if(ntagged==3&&njets>=4){
 	category =  "cate3"; 
+    }
+    else if(ntagged>=4&&njets>=4){
+	category =  "cate4"; 
     }
     else{
 	category = "none";
