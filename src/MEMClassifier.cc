@@ -87,7 +87,7 @@ void MEMClassifier::setup_mem(
 
     // Fallback
     default: {
-        std::cout << "Warning! Fallback case reached. Invalid MEM Hypo!!!" << std::endl;
+        std::cerr << "Warning! Fallback case reached. Invalid MEM Hypo!!!" << std::endl;
         throw 1;
     }
 
@@ -152,7 +152,7 @@ void MEMClassifier::setup_mem_sl_0w2h2t(
     for (auto* jet : tagged) {
         objs.push_back(jet);
         integrand->push_back_object(jet);
-        std::cout << "adding jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
+        //std::cout << "adding jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
     }
 
     for (unsigned int il=0; il < selectedLeptonP4.size(); il++) {
@@ -222,14 +222,14 @@ void MEMClassifier::setup_mem_sl_2w2h2t(
     for (auto* jet : tagged) {
         objs.push_back(jet);
         integrand->push_back_object(jet);
-        std::cout << "adding tagged jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
+        //std::cout << "adding tagged jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
     }
 
     assert(untagged.size() >= 2);
     for (auto* jet : untagged) {
         objs.push_back(jet);
         integrand->push_back_object(jet);
-        std::cout << "adding untagged jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
+        //std::cout << "adding untagged jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
     }
 
     for (unsigned int il=0; il < selectedLeptonP4.size(); il++) {
@@ -296,7 +296,7 @@ void MEMClassifier::setup_mem_dl_0w2h2t(
     for (auto* jet : tagged) {
         objs.push_back(jet);
         integrand->push_back_object(jet);
-        std::cout << "adding jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
+        //std::cout << "adding jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
     }
 
     for (unsigned int il=0; il < selectedLeptonP4.size(); il++) {
@@ -399,13 +399,13 @@ void MEMClassifier::setup_mem_sl_2w2h2t_sj(
     for (auto* jet : tagged) {
         objs.push_back(jet);
         integrand->push_back_object(jet);
-        std::cout << "adding tagged jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
+        //std::cout << "adding tagged jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
     }
 
     for (auto* jet : untagged) {
         objs.push_back(jet);
         integrand->push_back_object(jet);
-        std::cout << "adding untagged jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
+        //std::cout << "adding untagged jet " << jet->p4().Pt() << " btag " << jet->getObs(MEM::Observable::BTAG) << std::endl;
     }
 
     for (unsigned int il=0; il < selectedLeptonP4.size(); il++) {
@@ -414,15 +414,14 @@ void MEMClassifier::setup_mem_sl_2w2h2t_sj(
         MEM::Object* lep = make_lepton(lep_p4.Pt(), lep_p4.Eta(), lep_p4.Phi(), lep_p4.M(), selectedLeptonCharge[il]);
         objs.push_back(lep);
         integrand->push_back_object(lep);
-        std::cout << "adding lep " << lep->p4().Pt() << " charge " << lep->getObs(MEM::Observable::CHARGE) << std::endl;
+        //std::cout << "adding lep " << lep->p4().Pt() << " charge " << lep->getObs(MEM::Observable::CHARGE) << std::endl;
     }
 
     assert(metP4.Pt() > 0);
     MEM::Object* met = new MEM::Object(metP4, MEM::ObjectType::MET );
-    std::cout << "adding met pt " << met->p4().Pt() << " phi " << met->p4().Phi() << std::endl;
+    //std::cout << "adding met pt " << met->p4().Pt() << " phi " << met->p4().Phi() << std::endl;
     integrand->push_back_object(met);
 }
-
 
 MEMResult MEMClassifier::GetOutput(
     const Hypothesis hypo,
@@ -433,7 +432,8 @@ MEMResult MEMClassifier::GetOutput(
     const std::vector<JetType>& selectedJetType,
     const std::vector<TLorentzVector>& looseSelectedJetP4,
     const std::vector<double>& looseSelectedJetCSV,
-    TLorentzVector& metP4
+    TLorentzVector& metP4,
+    int ncalls
 ) {
 
     // Make sure vector sizes match up
@@ -471,48 +471,48 @@ MEMResult MEMClassifier::GetOutput(
 
     // Single Lepton - Boosted 222
     case SL_2W2H2T_SJ: {
-        std::cout << "MEM running signal" << std::endl;
-        res_sig = integrand->run(MEM::FinalState::LH, MEM::Hypothesis::TTH, {}, {});
+        //std::cout << "MEM running signal" << std::endl;
+        res_sig = integrand->run(MEM::FinalState::LH, MEM::Hypothesis::TTH, {}, {}, ncalls);
 
-        std::cout << "MEM running background" << std::endl;
-        res_bkg = integrand->run(MEM::FinalState::LH, MEM::Hypothesis::TTBB, {}, {});
+        //std::cout << "MEM running background" << std::endl;
+        res_bkg = integrand->run(MEM::FinalState::LH, MEM::Hypothesis::TTBB, {}, {}, ncalls);
 
         break;
     }
     
     // Single Lepton - Boosted 222
     case SL_2W2H2T: {
-        std::cout << "MEM running signal" << std::endl;
-        res_sig = integrand->run(MEM::FinalState::LH, MEM::Hypothesis::TTH, {}, {});
+        //std::cout << "MEM running signal" << std::endl;
+        res_sig = integrand->run(MEM::FinalState::LH, MEM::Hypothesis::TTH, {}, {}, ncalls);
 
-        std::cout << "MEM running background" << std::endl;
-        res_bkg = integrand->run(MEM::FinalState::LH, MEM::Hypothesis::TTBB, {}, {});
+        //std::cout << "MEM running background" << std::endl;
+        res_bkg = integrand->run(MEM::FinalState::LH, MEM::Hypothesis::TTBB, {}, {}, ncalls);
 
         break;
     }
 
     // Single Lepton - Resolved 022
     case SL_0W2H2T: {
-        std::cout << "MEM running signal" << std::endl;
+        //std::cout << "MEM running signal" << std::endl;
         res_sig = integrand->run(MEM::FinalState::LH, MEM::Hypothesis::TTH, {},
-        {MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1});
+        {MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1}, ncalls);
 
-        std::cout << "MEM running background" << std::endl;
+        //std::cout << "MEM running background" << std::endl;
         res_bkg = integrand->run(MEM::FinalState::LH, MEM::Hypothesis::TTBB, {},
-        {MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1});
+        {MEM::PSVar::cos_q1, MEM::PSVar::phi_q1, MEM::PSVar::cos_qbar1, MEM::PSVar::phi_qbar1}, ncalls);
 
         break;
     }
 
     // Di Lepton - Resolved 022
     case DL_0W2H2T: {
-        std::cout << "MEM running signal" << std::endl;
+        //std::cout << "MEM running signal" << std::endl;
         res_sig = integrand->run(MEM::FinalState::LL, MEM::Hypothesis::TTH, {},
-                                 {});
+                                 {}, ncalls);
 
-        std::cout << "MEM running background" << std::endl;
+        //std::cout << "MEM running background" << std::endl;
         res_bkg = integrand->run(MEM::FinalState::LL, MEM::Hypothesis::TTBB, {},
-                                 {});
+                                 {}, ncalls);
 
         break;
     }
@@ -586,7 +586,11 @@ TF1* MEMClassifier::getTransferFunction(const char* flavour, double eta) const {
     return tf;
 }
 
-MEMClassifier::MEMClassifier() : cfg(MEM::MEMConfig()) {
+MEMClassifier::MEMClassifier() : MEMClassifier(MEM::MEMConfig()) {
+}
+
+MEMClassifier::MEMClassifier(MEM::MEMConfig _cfg) :
+    cfg(_cfg) {
 
     const string cmssw_path(std::getenv("CMSSW_BASE"));
 
@@ -602,11 +606,11 @@ MEMClassifier::MEMClassifier() : cfg(MEM::MEMConfig()) {
         string("/src/TTH/CommonClassifier/data/btag_pdfs.root")
     ).c_str();
 
-    cout << "opening " << transfers_path << endl;
+    //cout << "opening " << transfers_path << endl;
     transfers = new TFile(transfers_path.c_str());
     assert(transfers != nullptr);
 
-    cout << "opening " << btagfile_path << endl;
+    //cout << "opening " << btagfile_path << endl;
     btagfile = new TFile(btagfile_path.c_str());
     assert(btagfile != nullptr);
 

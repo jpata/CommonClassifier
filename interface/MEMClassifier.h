@@ -54,6 +54,7 @@ class MEMClassifier {
 
     //The constructor loads the transfer functions and b-tag PDF-s
     MEMClassifier();
+    MEMClassifier(MEM::MEMConfig _cfg);
     ~MEMClassifier();
 
     // Call this method to return the MEM output, provide all necessary inputs.
@@ -68,7 +69,8 @@ class MEMClassifier {
         const std::vector<JetType>& selectedJetType,
         const std::vector<TLorentzVector>& looseSelectedJetP4,
         const std::vector<double>& looseSelectedJetCSV,
-        TLorentzVector& metP4
+        TLorentzVector& metP4,
+        int ncalls=1
     );
 
     void setup_mem(
