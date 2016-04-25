@@ -5,7 +5,6 @@ CvectorLorentz = getattr(ROOT, "std::vector<TLorentzVector>")
 Cvectordouble = getattr(ROOT, "std::vector<double>")
 CvectorJetType = getattr(ROOT, "std::vector<int>")
 
-ncalls = [1000, 2000, 4000, 8000, 16000, 32000]
 f = ROOT.MEMClassifier()
 
 if len(sys.argv)==2:
@@ -47,19 +46,21 @@ for ev in inf.readlines():
     c_loosejets_p4 = CvectorLorentz()
     c_loosejets_csv = Cvectordouble()
     out = {}
+    _ncalls = -1
     print "tthbb13 code cat={0}".format(jsev["event"]["cat"])
-    for _ncalls in ncalls:
-        if jsev["output"]["mem_cfg"] == "SL_2w2h2t":
-            ret = f.GetOutput(f.SL_2W2H2T, c_leps_p4, c_leps_charge, c_jets_p4, c_jets_csv, c_jets_jettype, c_loosejets_p4, c_loosejets_csv, met_p4, _ncalls)
-        elif jsev["output"]["mem_cfg"] == "SL_1w2h2t":
-            ret = f.GetOutput(f.SL_1W2H2T, c_leps_p4, c_leps_charge, c_jets_p4, c_jets_csv, c_jets_jettype, c_loosejets_p4, c_loosejets_csv, met_p4, _ncalls)
-        elif jsev["output"]["mem_cfg"] == "SL_0w2h2t":
-            ret = f.GetOutput(f.SL_0W2H2T, c_leps_p4, c_leps_charge, c_jets_p4, c_jets_csv, c_jets_jettype, c_loosejets_p4, c_loosejets_csv, met_p4, _ncalls)
-        out["output__{0}".format(_ncalls)] = {
-            "p_sig": ret.p_sig,
-            "p_err_sig": ret.p_err_sig,
-            "p_bkg": ret.p_bkg,
-            "p_err_bkg": ret.p_err_bkg
-        }
+    if jsev["output"]["mem_cfg"] == "SL_2w2h2t":
+        ret = f.GetOutput(f.SL_2W2H2T, c_leps_p4, c_leps_charge, c_jets_p4, c_jets_csv, c_jets_jettype, c_loosejets_p4, c_loosejets_csv, met_p4, _ncalls)
+    #elif jsev["output"]["mem_cfg"] == "SL_1w2h2t":
+    #    ret = f.GetOutput(f.SL_1W2H2T, c_leps_p4, c_leps_charge, c_jets_p4, c_jets_csv, c_jets_jettype, c_loosejets_p4, c_loosejets_csv, met_p4, _ncalls)
+    elif jsev["output"]["mem_cfg"] == "SL_0w2h2t":
+        ret = f.GetOutput(f.SL_0W2H2T, c_leps_p4, c_leps_charge, c_jets_p4, c_jets_csv, c_jets_jettype, c_loosejets_p4, c_loosejets_csv, met_p4, _ncalls)
+    elif jsev["output"]["mem_cfg"] == "DL_0w2h2t":
+        ret = f.GetOutput(f.DL_0W2H2T, c_leps_p4, c_leps_charge, c_jets_p4, c_jets_csv, c_jets_jettype, c_loosejets_p4, c_loosejets_csv, met_p4, _ncalls)
+    out["output__{0}".format(_ncalls)] = {
+        "p_sig": ret.p_sig,
+        "p_err_sig": ret.p_err_sig,
+        "p_bkg": ret.p_bkg,
+        "p_err_bkg": ret.p_err_bkg
+    }
     print "out:", json.dumps(out)
 
