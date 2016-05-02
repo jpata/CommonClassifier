@@ -1,9 +1,8 @@
 import ROOT, json, sys
 ROOT.gSystem.Load("libTTHCommonClassifier")
-ROOT.gSystem.Load("libTTHMEIntegratorStandalone")
 CvectorLorentz = getattr(ROOT, "std::vector<TLorentzVector>")
 Cvectordouble = getattr(ROOT, "std::vector<double>")
-CvectorJetType = getattr(ROOT, "std::vector<int>")
+CvectorJetType = getattr(ROOT, "std::vector<MEMClassifier::JetType>")
 
 f = ROOT.MEMClassifier()
 
@@ -31,7 +30,7 @@ for ev in inf.readlines():
     for ij, j in enumerate(jets_p4):
         c_jets_p4.push_back(make_p4(*j))
         c_jets_csv.push_back(jets_csv[ij])
-        c_jets_jettype.push_back(f.RESOLVED)
+        c_jets_jettype.push_back(ROOT.MEMClassifier.RESOLVED)
 
     c_leps_p4 = CvectorLorentz()
     c_leps_charge = Cvectordouble()
@@ -48,14 +47,7 @@ for ev in inf.readlines():
     out = {}
     _ncalls = -1
     print "tthbb13 code cat={0}".format(jsev["event"]["cat"])
-    if jsev["output"]["mem_cfg"] == "SL_2w2h2t":
-        ret = f.GetOutput(f.SL_2W2H2T, c_leps_p4, c_leps_charge, c_jets_p4, c_jets_csv, c_jets_jettype, c_loosejets_p4, c_loosejets_csv, met_p4, _ncalls)
-    #elif jsev["output"]["mem_cfg"] == "SL_1w2h2t":
-    #    ret = f.GetOutput(f.SL_1W2H2T, c_leps_p4, c_leps_charge, c_jets_p4, c_jets_csv, c_jets_jettype, c_loosejets_p4, c_loosejets_csv, met_p4, _ncalls)
-    elif jsev["output"]["mem_cfg"] == "SL_0w2h2t":
-        ret = f.GetOutput(f.SL_0W2H2T, c_leps_p4, c_leps_charge, c_jets_p4, c_jets_csv, c_jets_jettype, c_loosejets_p4, c_loosejets_csv, met_p4, _ncalls)
-    elif jsev["output"]["mem_cfg"] == "DL_0w2h2t":
-        ret = f.GetOutput(f.DL_0W2H2T, c_leps_p4, c_leps_charge, c_jets_p4, c_jets_csv, c_jets_jettype, c_loosejets_p4, c_loosejets_csv, met_p4, _ncalls)
+    ret = f.GetOutput(c_leps_p4, c_leps_charge, c_jets_p4, c_jets_csv, c_jets_jettype, met_p4)
     out["output__{0}".format(_ncalls)] = {
         "p_sig": ret.p_sig,
         "p_err_sig": ret.p_err_sig,

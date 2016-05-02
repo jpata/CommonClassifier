@@ -36,11 +36,6 @@ public:
     // Jet type: Needed to decide:
     //   - which jets to put into which slot of the MEM
     //   - which transfer function to use
-    enum JetType {
-        RESOLVED,
-        BOOSTED_LIGHT,
-        BOOSTED_B
-    };
 
     // Hypothesis
     enum Hypothesis {
@@ -51,6 +46,13 @@ public:
         SL_2W2H2T_SJ,  // Boosted SL MEM: 2 light jets + bjets
         DL_0W2H2T,     // Default DL MEM
     };
+
+    enum JetType {
+        RESOLVED,
+        BOOSTED_LIGHT,
+        BOOSTED_B
+    };
+
 
 
     //The constructor loads the transfer functions and b-tag PDF-s
