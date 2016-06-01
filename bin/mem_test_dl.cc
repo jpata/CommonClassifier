@@ -69,7 +69,6 @@ int main(){
   );
   for (int i=0; i<2; i++) {
     auto res = mem.GetOutput(
-      MEMClassifier::Hypothesis::DL_0W2H2T,
       leps_p4,
       {-1, 1},
       jets_p4,
@@ -80,13 +79,11 @@ int main(){
         0.979629218578,
       },
       {  
-	MEMClassifier::JetType::RESOLVED,
-	MEMClassifier::JetType::RESOLVED,
-	MEMClassifier::JetType::RESOLVED,
-	MEMClassifier::JetType::RESOLVED,
+        MEMClassifier::JetType::RESOLVED,
+        MEMClassifier::JetType::RESOLVED,
+        MEMClassifier::JetType::RESOLVED,
+        MEMClassifier::JetType::RESOLVED,
       },
-      {},
-      {},
       lv_met
     );
     std::cout << "mem=" << res.p << std::endl;

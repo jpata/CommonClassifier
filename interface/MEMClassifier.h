@@ -9,7 +9,7 @@
 #include "TLorentzVector.h"
 
 class MEMResult {
-  public:
+public:
     double blr_4b;
     double blr_2b;
 
@@ -31,25 +31,28 @@ class MEMResult {
 
 class MEMClassifier {
 
-  public:
+public:
 
     // Jet type: Needed to decide:
     //   - which jets to put into which slot of the MEM
     //   - which transfer function to use
+
+    // Hypothesis
+    enum Hypothesis {
+        DEBUG,         // Don't run the MEM. Print debug info
+        SL_0W2H2T,     // Default SL MEM: Integrate over light jets
+        SL_1W2H2T,     // Default SL MEM: Integrate over light jets
+        SL_2W2H2T,     // Fully reconstructed hypothesis
+        SL_2W2H2T_SJ,  // Boosted SL MEM: 2 light jets + bjets
+        DL_0W2H2T,     // Default DL MEM
+    };
+
     enum JetType {
         RESOLVED,
         BOOSTED_LIGHT,
         BOOSTED_B
     };
 
-    // Hypothesis
-    enum Hypothesis {
-        DEBUG,         // Don't run the MEM. Print debug info
-        SL_0W2H2T,     // Default SL MEM: Integrate over light jets
-        SL_2W2H2T,     // Fully reconstructed hypothesis
-        SL_2W2H2T_SJ,  // Boosted SL MEM: 2 light jets + bjets
-        DL_0W2H2T,     // Default DL MEM
-    };
 
 
     //The constructor loads the transfer functions and b-tag PDF-s
@@ -68,6 +71,17 @@ class MEMClassifier {
         const std::vector<JetType>& selectedJetType,
         const std::vector<TLorentzVector>& looseSelectedJetP4,
         const std::vector<double>& looseSelectedJetCSV,
+        TLorentzVector& metP4,
+        int ncalls=-1
+    );
+
+    //Default method to get the MEM output
+    MEMResult GetOutput(
+        const std::vector<TLorentzVector>& selectedLeptonP4,
+        const std::vector<double>& selectedLeptonCharge,
+        const std::vector<TLorentzVector>& selectedJetP4,
+        const std::vector<double>& selectedJetCSV,
+        const std::vector<JetType>& selectedJetType,
         TLorentzVector& metP4
     );
 
@@ -85,7 +99,7 @@ class MEMClassifier {
         MEMResult& res
     );
 
-    void setup_mem_sl_0w2h2t(
+    void setup_mem_impl(
         const std::vector<TLorentzVector>& selectedLeptonP4,
         const std::vector<double>& selectedLeptonCharge,
         const std::vector<TLorentzVector>& selectedJetP4,
@@ -111,33 +125,10 @@ class MEMClassifier {
         MEMResult& res
     );
 
-    void setup_mem_sl_2w2h2t(
-        const std::vector<TLorentzVector>& selectedLeptonP4,
-        const std::vector<double>& selectedLeptonCharge,
-        const std::vector<TLorentzVector>& selectedJetP4,
-        const std::vector<double>& selectedJetCSV,
-        const std::vector<JetType>& selectedJetType,
-        const std::vector<TLorentzVector>& looseSelectedJetP4,
-        const std::vector<double>& looseSelectedJetCSV,
-        TLorentzVector& metP4,
-        std::vector<MEM::Object*>& objs,
-        MEMResult& res
-    );
-
-    void setup_mem_dl_0w2h2t(
-        const std::vector<TLorentzVector>& selectedLeptonP4,
-        const std::vector<double>& selectedLeptonCharge,
-        const std::vector<TLorentzVector>& selectedJetP4,
-        const std::vector<double>& selectedJetCSV,
-        TLorentzVector& metP4,
-        std::vector<MEM::Object*>& objs,
-        MEMResult& res
-    );
-
     // returns the category of the last evaluated Event
     std::string GetCategoryOfLastEvaluation() const;
 
-  private:
+private:
     //Holds the transfer functions
     TFile* transfers;
     //holds the b-tag PDF-s

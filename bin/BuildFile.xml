@@ -7,11 +7,6 @@
 <use   name="boost"/>
 <use   name="lhapdf"/>
 <lib   name="openloops"/>
-<lib   name="coli"/>
-<lib   name="openloops_ppHtt_1tL"/>
-<lib   name="openloops_ppttbb_1tL"/>
-<lib   name="pphttxcallme2born"/>
-<lib   name="ppttxbbxcallme2born"/>
 <use   name="TTH/MEIntegratorStandalone"/>
 <use   name="TTH/CommonClassifier"/>
 <bin name="mem_test" file="mem_test.cc"></bin>
@@ -21,5 +16,4 @@
 <bin name="Membdt_test" file="Membdt_test.cc"></bin>
 <bin name="DLbdt_test" file="DLbdt_test.cc"></bin>
 <bin name="MembdtV2_test" file="MembdtV2_test.cc"></bin>
-
-<Flags CXXFLAGS="-g"/>
+<Flags CXXFLAGS="-g -O0"/>
