@@ -1,5 +1,12 @@
 <lcgdict>
-	<class name="MEMClassifier"/>
+        <class name="MEMClassifier"/>
 	<class name="BDTClassifier"/>
+	<class name="BlrBDTClassifier"/>
+	<class name="MEMBDTClassifier"/>
+	<class name="DLBDTClassifier"/>
+	<class name="MEMBDTClassifierV2"/>
+	
 	<class name="MEMResult"/>
+	<enum name="MEMResult::JetType"/>
+	<enum name="MEMResult::MEMHypothesis"/>
 </lcgdict>
