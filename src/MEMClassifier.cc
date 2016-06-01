@@ -359,7 +359,7 @@ MEMResult MEMClassifier::GetOutput(
     res.p_err_bkg = res_bkg.p_err;
     res.n_perm_sig = res_sig.num_perm;
     res.n_perm_bkg = res_bkg.num_perm;
-    res.p = res_sig.p / (res_sig.p + mem_weight*res_bkg.p);
+    res.p = res.p_sig / (res.p_sig + mem_weight*res.p_bkg);
     return res;
 }
 
